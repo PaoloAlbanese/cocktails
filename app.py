@@ -19,17 +19,27 @@ app.secret_key = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 
 
+@app.context_processor
+def get_authors():
+
+    authors = list(mongo.db.users.find())
+
+    return dict(authors=authors)
+
+
 @app.route("/")
 @app.route("/get_recipes")
 def get_recipes():
     recipes = list(mongo.db.recipes.find())
     return render_template("recipes.html", recipes=recipes)
 
+
 @app.route("/recipe/<recipe_id>")
 def recipe(recipe_id):
     recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
 
     return render_template("recipe.html", recipe=recipe)
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -56,6 +66,7 @@ def register():
 
     return render_template("register.html")
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -66,12 +77,12 @@ def login():
         if existing_user:
             # ensure hashed password matches user input
             if check_password_hash(
-                existing_user["password"], request.form.get("password")):
-                    session["user"] = request.form.get("username").lower()
-                    flash("Welcome, {}".format(
-                        request.form.get("username")))
-                    return redirect(url_for(
-                            "profile", username=session["user"]))
+                    existing_user["password"], request.form.get("password")):
+                session["user"] = request.form.get("username").lower()
+                flash("Welcome, {}".format(
+                    request.form.get("username")))
+                return redirect(url_for(
+                    "profile", username=session["user"]))
             else:
                 # invalid password match
                 flash("Incorrect Username and/or Password")
@@ -84,22 +95,53 @@ def login():
 
     return render_template("login.html")
 
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    query = request.args['search']
+    print('query ', query)
+    recipes = list(mongo.db.recipes.find({"$text": {"$search": query}}))
+    if query == "":
+        
+        queryTerm = "You haven\'t entered and search criteria"
+    else:
+        if recipes== []:
+            queryTerm = "Your search for \"" + query + "\" returned no results"
+        else:   
+        # prefixText = "Search results for query: "
+            queryTerm =  'Search results for query : \"' + query + '\"'
+    return render_template("recipes.html", recipes=recipes, queryTerm=queryTerm )
+
+
 @app.route("/profile/<username>", methods=["GET", "POST"])
 def profile(username):
     # grab the session user's username from db
+
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
     if session["user"]:
-        return render_template("profile.html", username=username)
+        recipes = mongo.db.recipes.find({"author": username})
 
-    return redirect(url_for("login"))
+        return render_template("profile.html", username=username, recipes=recipes)
+
+
+@app.route("/author/<username>", methods=["GET", "POST"])
+def author(username):
+
+    usernameObj = mongo.db.users.find_one({"username": username})
+    username = usernameObj['username']
+
+    recipes = mongo.db.recipes.find({"author": username})
+    return render_template("profile.html", username=username, recipes=recipes)
+
 
 @app.route("/logout")
 def logout():
     # remove user from session cookie
     flash("You have been logged out")
     session.pop("user")
-    return redirect(url_for("login"))    
+    return redirect(url_for("login"))
+
 
 @app.route("/add_recipe", methods=["GET", "POST"])
 def add_recipe():
@@ -187,7 +229,6 @@ def add_recipe():
                 else:
                     print(tag['tag'], 'not included')
         # print('quel che rimane de tags ', tags)
-        
 
         # tags = list(mongo.db.tags.find())
     except:
@@ -215,8 +256,6 @@ def add_recipe():
                 else:
                     print('quel che rimane de tags DE NOVO ', tags)
 
-
-                
     # try:
     #     time = request.form.get("time")
     # except:
@@ -248,7 +287,7 @@ def add_recipe():
                 recipe_description = ""
                 tags = list(mongo.db.tags.find().sort("tag", 1))
                 time = ""
-                cook_time=""
+                cook_time = ""
                 time_notes = ""
                 author = ""
                 tagsInput = []
@@ -261,7 +300,7 @@ def add_recipe():
                 recipe_description = ""
                 tags = list(mongo.db.tags.find().sort("tag", 1))
                 time = ""
-                cook_time=""
+                cook_time = ""
                 time_notes = ""
                 author = ""
                 tagsInput = []
@@ -331,7 +370,7 @@ def add_recipe():
                 tagsInput.remove(tagToRemove)
             ingridients.pop(ing_to_del)
             session['ingridients'] = list(ingridients)
-               
+
         # return render_template("add_recipe.html", ingridients=ingridients, recipe_description=recipe_description, recipe_name=recipe_name, steps=steps, tags=tags, time=time, time_notes=time_notes, can_add_ing=can_add_ing)
 
     if 'del_step' in request.args:
@@ -410,7 +449,6 @@ def add_recipe():
                         tagsInput.append(str(ingredient1[0]))
                         session['tagsInput'] = tagsInput
 
-
             else:
                 # (ingredient1[0] and  ingredient1[1]) or (ingredient1[0] and  ingredient1[2]) or (ingredient1[1] and  ingredient1[2]):
                 if 'afterIng' in request.args:
@@ -467,8 +505,6 @@ def add_recipe():
         #     if ingredient[0][0]:
         #         print ('lo ingrediente ', ingredient)
 
-
-
         recipe = {
             "recipe_name": request.form.get("recipe_name"),
             "recipe_description": request.form.get("recipe_description"),
@@ -482,9 +518,9 @@ def add_recipe():
             "author": request.form.get("author"),
         }
 
-        existingTags= list(mongo.db.tags.find().sort("tag", 1))
-        
-        existingTagsItems=[]
+        existingTags = list(mongo.db.tags.find().sort("tag", 1))
+
+        existingTagsItems = []
         for tag in existingTags:
             existingTagsItems.append(tag['tag'])
 
@@ -492,21 +528,47 @@ def add_recipe():
         if tagsInput:
             for x in tagsInput:
                 strX = str(x)
-                tagToAdd = {"tag":strX}
+                tagToAdd = {"tag": strX}
                 if not strX in existingTagsItems:
-                    print ('aggiungiam la tag', x)
+                    print('aggiungiam la tag', x)
                     mongo.db.tags.insert_one(tagToAdd)
+
+        thisRecipeAuthor = request.form.get("author")
+        recipeIDsSoFar = []
+        UserRecipesSoFar = list(
+            mongo.db.recipes.find({"author": thisRecipeAuthor}))
+        for x in UserRecipesSoFar:
+            recipeIDsSoFar.append(str(ObjectId(x['_id'])))
+            # idsofarid = ObjectId(x['_id'])
+            # print('idsofarid ', idsofarid)
+            # recipeIDsSoFar.append(idsofarid)
 
         session['ingridients'] = list(ingridients)
         session['steps'] = list(steps)
         print('tutta la recipe ', recipe)
         mongo.db.recipes.insert_one(recipe)
+        NewUserRecipeIDs = []
+        LastID = ""
+        recipesWithNew = list(mongo.db.recipes.find(
+            {"author": thisRecipeAuthor}))
+        for x in recipesWithNew:
+            NewUserRecipeIDs.append(str(ObjectId(x['_id'])))
+            # NewUserRecipeIDs.append(str(ObjectId(x)))
+        strLastID = ""
+        for x in NewUserRecipeIDs:
+            if not x in recipeIDsSoFar:
+                LastID = x
+                strLastID = str(LastID)
+
+        print('thisRecipeAuthor ', thisRecipeAuthor, 'recipeIDsSoFar', recipeIDsSoFar, 'recipesWithNew',
+              recipesWithNew, 'NewUserRecipeIDs ', NewUserRecipeIDs, 'LastID ', LastID, 'strLastID ', strLastID)
+
         flash("Recipe Successfully Added")
         session.pop("ingridients")
         session.pop("steps")
         session.pop("tagsInput")
-        return redirect(url_for("add_recipe", ingridients=ingridients, steps=steps))
-    
+        # return redirect(url_for("add_recipe", ingridients=ingridients, steps=steps))
+        return redirect(url_for('recipe', recipe_id=LastID))
 
     # return render_template("add_recipe.html", categories=categories, ingridients=ingridients, can_add_ing=can_add_ing, context=context)
     # return render_template("add_recipe.html", ingridients=ingridients, recipe_description=recipe_description, recipe_name=recipe_name, steps=steps, tags=tags, time=time, time_notes=time_notes, can_add_ing=can_add_ing, author=author, afterIng=afterIng, can_add_step=can_add_step,  afterStep=afterStep, clear=clear, incomplete_Ing =incomplete_Ing)
@@ -517,9 +579,9 @@ def add_recipe():
 @app.route("/edit_recipe", methods=["GET", "POST"])
 def edit_recipe():
     if 'recipe_id' in request.args:
-        time=""
-        cook_time=""
-        time_notes=""
+        time = ""
+        cook_time = ""
+        time_notes = ""
         recipe_id = request.args['recipe_id']
         session['recipe_id'] = recipe_id
         recipeToEdit = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
@@ -529,7 +591,7 @@ def edit_recipe():
         recipe_nameFetched = recipeToEdit.get('recipe_name')
         recipe_descriptionFetched = recipeToEdit.get('recipe_description')
         timeFetched = recipeToEdit.get('time')
-        
+
         recipe_name = recipe_nameFetched
         recipe_description = recipe_descriptionFetched
         try:
@@ -541,12 +603,11 @@ def edit_recipe():
             cook_time = timeFetched[1]
         except:
             pass
-        
+
         try:
             time_notes = timeFetched[2]
         except:
             pass
-            
 
         ingridientsFetched = recipeToEdit.get('ingridients')
         stepsFetched = recipeToEdit.get('steps')
@@ -563,13 +624,18 @@ def edit_recipe():
         steps = session['steps']
         tagsInput = session['tagsInput']
 
-        return render_template("edit_recipe.html", recipe=recipeToEdit, tags=tags, recipe_name=recipe_name, recipe_description=recipe_description, time=time, cook_time=cook_time, time_notes=time_notes,  recipe_id=recipe_id, ingridients=ingridients, steps=steps, tagsInput=tagsInput )
+        return render_template("edit_recipe.html", recipe=recipeToEdit, tags=tags, recipe_name=recipe_name, recipe_description=recipe_description, time=time, cook_time=cook_time, time_notes=time_notes,  recipe_id=recipe_id, ingridients=ingridients, steps=steps, tagsInput=tagsInput)
         # return render_template("edit_recipe.html", recipe=recipeToEdit, ingridients=ingridients, tagsInput=tagsInput, steps=steps, tags=tags, can_add_ing=can_add_ing, edit_step=edit_step, edit_ing=edit_ing, ing_to_edit=ing_to_edit, author=author, afterIng=afterIng, can_add_step=can_add_step, step_to_edit=step_to_edit, afterStep=afterStep, clear=clear, incomplete_Ing=incomplete_Ing)
 
     try:
+        recipe_id = session['recipe_id']
+    except:
+        recipe_id = ""
+
+    try:
         tagsInput = session['tagsInput']
-            
-        print('ci sta a session di tags inputtags ', tagsInput) 
+
+        print('ci sta a session di tags inputtags ', tagsInput)
     except:
         tagsInput = []
         print('recipeToEdit. ', tagsInput)
@@ -641,7 +707,6 @@ def edit_recipe():
                     print('found deltag', deltag)
                     tagsInput.remove(tag)
 
-
                     print('le tags a questo punto ', tags)
             tags = list(mongo.db.tags.find().sort("tag", 1))
             for tag in tags:
@@ -650,8 +715,6 @@ def edit_recipe():
                 else:
                     print('quel che rimane de tags DE NOVO ', tags)
 
-
-                
     try:
         author = request.form.get("author")
     except:
@@ -675,7 +738,7 @@ def edit_recipe():
                 recipe_description = ""
                 tags = list(mongo.db.tags.find().sort("tag", 1))
                 time = ""
-                cook_time=""
+                cook_time = ""
                 time_notes = ""
                 author = ""
                 tagsInput = []
@@ -688,14 +751,13 @@ def edit_recipe():
                 recipe_description = ""
                 tags = list(mongo.db.tags.find().sort("tag", 1))
                 time = ""
-                cook_time=""
+                cook_time = ""
                 time_notes = ""
                 author = ""
                 tagsInput = []
                 incomplete_Ing = []
     else:
         clear = False
-
 
     if 'afterIng' in request.args:
         afterIng = int(request.args['afterIng'])
@@ -753,7 +815,7 @@ def edit_recipe():
                 tagsInput.remove(tagToRemove)
             ingridients.pop(ing_to_del)
             session['ingridients'] = list(ingridients)
-               
+
     if 'del_step' in request.args:
         step_to_del = int(request.args['step_to_del'])
         steps.pop(step_to_del)
@@ -829,7 +891,6 @@ def edit_recipe():
                         tagsInput.append(str(ingredient1[0]))
                         session['tagsInput'] = tagsInput
 
-
             else:
                 if 'afterIng' in request.args:
                     afterIng = int(request.args['afterIng'])
@@ -840,7 +901,6 @@ def edit_recipe():
                     incomplete_Ing = request.form.getlist('ingredient1')
                     print('incomplete ings no afterIng', incomplete_Ing)
 
- 
     if 'add_step' in request.args:
         step = ""
         step = str(request.form.get('step'))
@@ -867,9 +927,6 @@ def edit_recipe():
         #     if ingredient[0][0]:
         #         print ('lo ingrediente ', ingredient)
 
-        recipe_id = session['recipe_id']
-        
-
         editRecipe = {
             "recipe_name": request.form.get("recipe_name"),
             "recipe_description": request.form.get("recipe_description"),
@@ -880,9 +937,9 @@ def edit_recipe():
             "author": request.form.get("author"),
         }
 
-        existingTags= list(mongo.db.tags.find().sort("tag", 1))
-    
-        existingTagsItems=[]
+        existingTags = list(mongo.db.tags.find().sort("tag", 1))
+
+        existingTagsItems = []
         for tag in existingTags:
             existingTagsItems.append(tag['tag'])
 
@@ -890,9 +947,9 @@ def edit_recipe():
         if tagsInput:
             for x in tagsInput:
                 strX = str(x)
-                tagToAdd = {"tag":strX}
+                tagToAdd = {"tag": strX}
                 if not strX in existingTagsItems:
-                    print ('aggiungiam la tag', x)
+                    print('aggiungiam la tag', x)
                     mongo.db.tags.insert_one(tagToAdd)
 
         # session['ingridients'] = list(ingridients)
@@ -911,18 +968,16 @@ def edit_recipe():
         return redirect(url_for('recipe', recipe_id=recipe_id))
         # return redirect(url_for("edit_recipe", ingridients=ingridients, steps=steps))
 
-
-    return render_template("edit_recipe.html", ingridients=ingridients, tagsInput=tagsInput, steps=steps, tags=tags, can_add_ing=can_add_ing, edit_step=edit_step, edit_ing=edit_ing, ing_to_edit=ing_to_edit, author=author, afterIng=afterIng, can_add_step=can_add_step, step_to_edit=step_to_edit, afterStep=afterStep, clear=clear, incomplete_Ing=incomplete_Ing)
+    return render_template("edit_recipe.html", ingridients=ingridients, recipe_id=recipe_id, tagsInput=tagsInput, steps=steps, tags=tags, can_add_ing=can_add_ing, edit_step=edit_step, edit_ing=edit_ing, ing_to_edit=ing_to_edit, author=author, afterIng=afterIng, can_add_step=can_add_step, step_to_edit=step_to_edit, afterStep=afterStep, clear=clear, incomplete_Ing=incomplete_Ing)
 
 
 @app.route("/delete_recipe/<recipe_id>/<username>", methods=["GET", "POST"])
 def delete_recipe(recipe_id, username):
     recipeToDelete = mongo.db.recipes.remove({"_id": ObjectId(recipe_id)})
     flash("Recipe Successfully Deleted")
-    # username = mongo.db.users.find_one({"username": username })
-    return render_template("profile.html", username=username)
+    username = mongo.db.users.find_one({"username": username})
+    return redirect(url_for('profile', username=username))
 
-    return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),

@@ -427,7 +427,7 @@
         <div class="col s12 center-align">
 
             <button style="display: inline;" type="button" onclick="clearFields()">
-                <a href="{{url_for('edit_recipe')}}?clear=True">Clear</a>
+                <a href="{{ url_for('recipe', recipe_id=recipe._id) }}">Cancel this process</a>
             </button>
 
         </div>
