@@ -1,0 +1,33 @@
+::placeholder {
+  color: red!important;
+  opacity: 1!important; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: red!important;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+ color: red!important;
+}
+
+#time_notes::placeholder,
+#cook_time::placeholder,
+#ingridient_notes1::placeholder,
+#search::placeholder {
+  color: grey!important;
+  opacity: 1!important; /* Firefox */
+}
+
+#time_notes::-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: grey!important;
+}
+
+
+#cook_time::-ms-input-placeholder { /* Microsoft Edge */
+ color: grey!important;
+}
+
+
+.red_color{ color:red; }
+.black_color{ color:black; }

@@ -1,19 +1,25 @@
 {% extends "base.html" %}
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    {% block title %}
-    <title>Cocktails Recipes</title>
-    {% endblock %}
-<!-- </head>
-<body> -->
-    {% block content %}
-    <br>
-    {% for recipe in recipes %}
-        <a href="{{ url_for('recipe', recipe_id=recipe._id) }}">{{ recipe.recipe_name }}</a>
-        <br>
+{% block content %}
+
+<br>
+        <!-- <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" onclick="keepFields()" id="recipe_name"></a> -->
+        {% if session.user %}
+        {% if session.user|lower == recipe.author|lower or session.user|lower == 'admin' %}
+        <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" onclick="keepFields()" id="recipe_name">
+            <button type="submit" class="btn-large light-blue darken-1 text-shadow" onclick="keepFields()">
+                Edit Recipe <i class="fas fa-plus-square right"></i>
+            </button>
+        </a>
+
+        <a href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}">
+            <button type="submit" class="btn-large light-blue darken-1 text-shadow">
+                Delete Recipe <i class="fas fa-plus-square right"></i>
+            </button>
+        </a>
+        {% endif %}
+        {% endif %}
+        <br><br>
+        {{ recipe.recipe_name }}<br>
         {{ recipe.recipe_description }}<br>
         <p>Preparation Time: {{ recipe.time[0] }} minutes</p><br>
         {% if recipe.time[1] %}<p>Cook Time: {{ recipe.time[1] }} minutes</p><br>{% endif %}
@@ -21,7 +27,6 @@
 
         {% for ingridient in recipe.ingridients %}
             
-            <!-- <p class="">{{ingridient[1]}} {% if ingridient[2] != 'not applicable' %}{{ingridient[2]}}{% endif %} {{ingridient[0]}} {{ingridient[3]}}</p> -->
 
             <p>{% if ingridient[2] == 'not applicable' %}{% if ingridient[1]|string == '0.5'  %}1/2 {% elif ingridient[1]|string == '0.25'  %}1/4 {% elif ingridient[1]|string == '0.75'  %}3/4 {% elif ingridient[1]|string == '1'  %} {% else %}{{ingridient[1]}}{% endif %}{% elif ingridient[2] != 'not applicable' %}{{ingridient[1]}}{% endif %} 
                                             {% if ingridient[2] != 'not applicable' %} {% if ingridient[2] == 'drops' %}{% if (ingridient[1])|string == '1'  %}drop{% else %}{{ingridient[2]}}{%endif%}{{ingridient[2]}}{% else %}{{ingridient[2]}}{% endif %}{% endif %} 
@@ -35,8 +40,6 @@
         {{ recipe.tags }}<br>
         {{ recipe.author }}<br>
     <br>
-        {% endfor %}
 
-    {% endblock %}    
-<!-- </body>
-</html> -->
+
+{% endblock %}

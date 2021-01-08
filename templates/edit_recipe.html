@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+
+
+    {% block title %}
+    <title>edit Recipe</title>
+    {% endblock %}
+
+
+ {% block content %}
+
+<h3 class="mx-auto text-center">Edit Recipe</h3>
+
+    <form class="col s12" method="POST" action="{{ url_for('edit_recipe') }}" name="mainForm">
+
+{ if not recipe %}
+
+    
+
+
+        <div class="input-field col s12">
+            <i class="fas fa-user-circle prefix light-blue-text text-darken-4"></i>
+            <input id="recipe_name" name="recipe_name" type="text" class="validate"
+                {% if recipe_name %}value="{{recipe_name}}"
+                {% else %}placeholder='required field, e.g. "Mojito with a twist"'{% endif %} required>
+            <label for="recipe_name">Recipe Name</label>
+        </div>
+
+        <div class="input-field col s12">
+            <i class="fas fa-phone prefix light-blue-text text-darken-4"></i>
+            <textarea id="recipe_description" name="recipe_description" minlength="5" maxlength="200"
+                class="materialize-textarea validate" {% if recipe_description %} value="{{recipe_description}}"
+                {% endif %} placeholder="required field, a brief introduction to your recipe here"
+                required>{% if recipe_description %}{{recipe_description}}{% endif %}</textarea>
+            <label for="recipe_description">Recipe Description</label>
+        </div>
+
+        <div class="input-field col s12">
+            <i class="fas fa-user-circle prefix light-blue-text text-darken-4"></i>
+            <input id="time" name="time" type="number" min="1" class="validate" {% if time %}value="{{time}}" {% endif %}
+                placeholder="time in minutes" required>
+                <label for="time">Preparation Time</label><br>
+            <input id="cook_time" name="cook_time" type="number" min="1" class="validate" {% if cook_time %}value="{{cook_time}}" {% endif %}
+                placeholder="cook time in minutes, if any">    
+            <label for="cook_time">Cook Time, if any</label><br>
+            <textarea id="time_notes" name="time_notes" type="text" class="validate" {% if time %}value="{% if time_notes %}{{time_notes}}{% endif %}"
+                {% endif %} placeholder='optional additional notes on time required e.g. "plus an hour to rest"'  style="color:black;">{% if time %}{% if time_notes %}{{time_notes}}{% endif %}{% endif %}</textarea>
+            <label for="time_notes">additional notes on time</label>
+        </div>
+
+
+        <br>
+
+
+        {% if ingridients %}
+        <div>
+            {% for ingridient in ingridients %}
+            {% if edit_ing and ing_to_edit == loop.index0 %}
+            <div>
+                <fieldset>
+                    <label for="ingredient1">Ingridient3:</label><br>
+                    <input type="text" id="ingredient1" name="ingredient1"
+                        {% if ingridient[0] %}value="{{ingridient[0]}}"
+                        {% else %}placeholder="this field is still empty" {% endif %}><br>
+                    <label for="ingridient_qty3">Ingridient Quantity3</label><br>
+                    <input type="number" min="0.25" step="0.25" id="ingridient_qty1" name="ingredient1"
+                        {% if ingridient[1] %}value="{{ingridient[1]}}"
+                        {% else %}placeholder="this field is still empty" {% endif %}><br>
+                    <label for="ingridient_unit3">Ingridient Unit3</label><br>
+
+                <select name="ingredient1" id="ingridient_unit1" value=""   required>
+                    <option selected disabled>select a measure</option>
+                    <option value="ml" {% if ingridient[2] =='ml'%}selected{% endif %}>ml</option>
+                    <option value="ltr" {% if ingridient[2]  =='ltr'%}selected{% endif %}>ltr</option>
+                    <option value="g" {% if ingridient[2] == 'g' %} selected {% endif %} >g</option>
+                    <option value="Kg" {% if ingridient[2] == 'Kg' %} selected {% endif %}>Kg</option>
+                    <option value="tsp" {% if ingridient[2] == 'tsp' %} selected {% endif %}>tsp</option>
+                    <option value="tbsp" {% if ingridient[2] == 'tbsp' %} selected {% endif %}>tbsp</option>
+                    <option value="oz" {% if ingridient[2] == 'oz' %} selected {% endif %}>oz</option>
+                    <option value="drops" {% if ingridient[2] == 'drops' %} selected {% endif %}>drops</option>
+                    <option value=" small handful of" {% if ingridient[2] == ' small handful of' %} selected {% endif %}>small handful</option>
+                    <option value="not applicable" {% if ingridient[2] == 'not applicable' %} selected {% endif %}>not applicable</option>
+                    <option value="loose" {% if ingridient[2] == 'loose' %} selected {% endif %}>just one, loose</option>
+                </select>
+                <br>
+                    <label for="ingridient_notes3">Ingridient notes4</label><br>
+                    <textarea type="text" id="ingridient_notes1" name="ingredient1"
+                        placeholder='notes on this ingredient e.g. "peeled"'
+                        {% if ingridient[3] %}value="{{ingridient[3]}}" {% endif %}>{% if ingridient[3] %}{{ingridient[3]}}{% endif %}</textarea><br>
+
+                    <button style="display: inline;"
+                        formaction="{{url_for('edit_recipe')}}?add_ingridient&editIng={{loop.index0}}" type="submit" onclick="keepFields()">Update
+                        ingredient</button>
+
+                    <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?cancel_ingredient" type="submit" onclick="keepFields()">cancel
+                    editing this ingredient
+                    </button>     
+
+                    <div class="col s12 center-align">
+
+
+                    </div>
+
+                </fieldset>
+            </div>
+            {% else %}
+            <div style="display:block;">
+                <p style="display: inline;">{% if ingridient[2] == 'not applicable' %}{% if ingridient[1]|string == '0.5'  %}1/2 {% elif ingridient[1]|string == '0.25'  %}1/4 {% elif ingridient[1]|string == '0.75'  %}3/4 {% elif ingridient[1]|string == '1'  %} {% else %}{{ingridient[1]}}{% endif %}{% elif ingridient[2] != 'not applicable' %}{{ingridient[1]}}{% endif %} 
+                                            {% if ingridient[2] != 'not applicable' %} {% if ingridient[2] == 'drops' %}{% if (ingridient[1])|string == '1'  %}drop{% else %}{{ingridient[2]}}{%endif%}{{ingridient[2]}}{% else %}{{ingridient[2]}}{% endif %}{% endif %} 
+                                            {{ingridient[0]}}{% if ingridient[3] %},{% endif %} {{ingridient[3]}}</p>
+                <button style="display: inline;"
+                    formaction="{{url_for('edit_recipe')}}?ingridient_pos_up={{loop.index0}}" onclick="keepFields()"> up
+                    {{ loop.index0}}</button>
+                <button style="display: inline;"
+                    formaction="{{url_for('edit_recipe')}}?ingridient_pos_down={{loop.index0}}" onclick="keepFields()"> down
+                    {{ loop.index0}}</button>
+                <button formaction="{{url_for('edit_recipe')}}?can_add_ing=True&afterIng={{loop.index0}}"
+                    type="submit" onclick="keepFields()">plus here</button>
+
+
+                <button style="display: inline;" type="button" onclick="keepFields()">
+                    <a href=" {{url_for('edit_recipe')}}?del_ing=True&ing_to_del={{loop.index0}}">delete from here</a>
+                </button>
+
+                <button style="display: inline;" type="button" onclick="keepFields()">
+                    <a href=" {{url_for('edit_recipe')}}?edit_ing=True&ing_to_edit={{loop.index0}}">Edit</a>
+                </button>
+
+
+            </div>
+            {% endif %}
+            {% if can_add_ing and afterIng == loop.index0 %}
+            <div>
+                <fieldset>
+                    <label for="ingredient1">Ingridient3:</label><br>
+                    <input type="text" id="ingredient1" name="ingredient1"
+                        {% if incomplete_Ing[0] %}value="{{incomplete_Ing[0]}}"
+                        {% else %}placeholder="this field is still empty"{% endif %}><br>
+                    <label for="ingridient_qty3">Ingridient Quantity3</label><br>
+                    <input type="number" min="0.25" step="0.25" id="ingridient_qty1" name="ingredient1"
+                        {% if incomplete_Ing[1] %}{% if incomplete_Ing[1]|string == '0.5' %}value="1/2"{% else %} value="{{incomplete_Ing[1]}}"{% endif %}{% else %}placeholder="this field is still empty"{% endif %}}><br>
+                    <label for="ingridient_unit3">Ingridient Unit3</label><br>
+
+
+                <select name="ingredient1" id="ingridient_unit1" class="red_color" >
+                    <option value="">select a measure</option>
+                    <option value="ml" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='ml'%}selected{% endif %}>ml</option>
+                    <option value="ltr" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='ltr'%}selected{% endif %}>ltr</option>
+                    <option value="g" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='g'%}selected{% endif %}>g</option>
+                    <option value="Kg" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='Kg'%}selected{% endif %}>Kg</option>
+                    <option value="tsp" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='tsp'%}selected{% endif %}>tsp</option>
+                    <option value="tbsp" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='tbsp'%}selected{% endif %}>tbsp</option>
+                    <option value="oz" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='oz'%}selected{% endif %}>oz</option>
+                    <option value="drops" {% if incomplete_Ing[2] and incomplete_Ing[2]  =='drops'%}selected{% endif %}>drops</option>
+                    <option value=" small handful of" {% if incomplete_Ing[2] and incomplete_Ing[2]  ==' small handful of'%}selected{% endif %}>small handful of</option>
+                    <option value="not applicable" {% if incomplete_Ing[2] and incomplete_Ing[2] == 'not applicable' %} selected {% endif %}>not applicable</option>
+                    <option value="loose" {% if incomplete_Ing[2] and incomplete_Ing[2] == 'loose' %} selected {% endif %}>just one, loose</option>
+                </select>
+                <br>
+                    <label for="ingridient_notes3">Ingridient notes4</label><br>
+                    <textarea type="text" id="ingridient_notes1" name="ingredient1"
+                        placeholder='notes on this ingredient e.g. "peeled"'
+                        {% if incomplete_Ing[3] %}value="{{incomplete_Ing[3]}}"{% endif %}>{% if incomplete_Ing[3] %}{{incomplete_Ing[3]}}{% endif %}</textarea><br>
+                    <button style="display: inline;"
+                        formaction="{{url_for('edit_recipe')}}?add_ingridient&can_add_ing=True&afterIng={{loop.index0}}" type="submit" onclick="keepFields()">Add
+                        ingredient</button>
+
+                    <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?cancel_ingredient" type="submit" onclick="keepFields()">cancel
+                    adding this ingredient
+                    </button>    
+
+                    <div class="col s12 center-align">
+
+
+                    </div>
+
+                </fieldset>
+            </div>
+            {% endif %}
+
+
+            
+
+            <br>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if not ingridients %}
+        <div>
+            <fieldset>
+
+                <legend>Enter at least one ingredient</legend>
+
+                <label for="ingredient1">Ingridient3:</label><br>
+                <input type="text" id="ingredient1" name="ingredient1" {% if incomplete_Ing[0] %}value="{{incomplete_Ing[0]}}"
+                        {% else %} placeholder="required field"{% endif %}
+                    required><br>
+                <label for="ingridient_qty3">Ingridient Quantity3</label><br>
+                <input type="number" min="0.25" step="0.25" id="ingridient_qty1" name="ingredient1" {% if incomplete_Ing[1] %}value="{{incomplete_Ing[1]}}"
+                        {% else %} placeholder="required field"{% endif %}
+                    required><br>
+                <label for="ingridient_unit3">Ingridient Unit3</label><br>
+
+                <select name="ingredient1" id="ingridient_unit1" class="red_color" required >
+                    <option selected disabled value="">select a measure</option>
+                    <option value="ml">ml</option>
+                    <option value="ltr">ltr</option>
+                    <option value="g">g</option>
+                    <option value="Kg">Kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                    <option value="oz">oz</option>
+                    <option value="drops">drops</option>
+                    <option value=" small handful of">small handful of</option>
+                    <option value="not applicable">not applicable</option>
+                    <option value="loose">just one, loose</option>
+                </select>
+
+                <label for="ingridient_notes3">Ingridient notes4</label><br>
+                <textarea type="text" id="ingridient_notes1" name="ingredient1" {% if incomplete_Ing[3] %}value="{{incomplete_Ing[3]}}"
+                        {% else %}
+                    placeholder='optional notes on this ingredient e.g. "peeled"'{% endif %}></textarea><br>
+                <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?add_ingridient" type="submit" onclick="keepFields()">Add
+                    ingredient</button>
+    
+
+
+            </fieldset>
+        </div>
+        {% endif %}
+
+
+        <br>
+
+
+        {% if steps %}
+        <div>
+            {% for step in steps %}
+            {% if edit_step and step_to_edit == loop.index0 %}
+            <div>
+
+                <label for="step">Step:</label><br>
+                <input type="text" id="step" name="step" {% if step[step_to_edit] %}value="{{step}}"
+                        {% else %}placeholder="this field is still empty"{% endif %}><br>
+                <button style="display: inline;"
+                    formaction="{{url_for('edit_recipe')}}?add_step&step_to_edit={{loop.index0}}" type="submit">Edit 
+                    Step</button>
+
+                <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?cancel_step" type="submit" onclick="keepFields()">cancel
+                    editing this step
+                </button>
+                
+            </div>
+            {% else %}
+            <div style="display:block;">
+                <p style="display: inline;">{{step}}</p>
+                <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?step_pos_up={{loop.index0}}" onclick="keepFields()"> up
+                    {{ loop.index0}}</button>
+                <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?step_pos_down={{loop.index0}}" onclick="keepFields()">
+                    down {{ loop.index0}}</button>
+
+                <button formaction="{{url_for('edit_recipe')}}?can_add_step=True&afterStep={{loop.index0}}"
+                    type="submit" onclick="keepFields()">plus here</button>
+            </div>
+
+            <button style="display: inline;" type="button" onclick="keepFields()">
+                <a href="{{url_for('edit_recipe')}}?del_step=True&step_to_del={{loop.index0}}">delete from here</a>
+            </button>
+
+            <button style="display: inline;" type="button" onclick="keepFields()">
+                    <a href=" {{url_for('edit_recipe')}}?edit_step=True&step_to_edit={{loop.index0}}">Edit step</a>
+            </button>
+            {% endif %}
+            <br>
+            {% if can_add_step and afterStep == loop.index0 %}
+            <div>
+
+                <label for="step">Step:</label><br>
+
+                <textarea id="step" name="step" minlength="5" maxlength="2000"
+                class="materialize-textarea validate" {% if recipe_description %} value="{{recipe_description}}"
+                {% endif %} placeholder="this field is still empty"
+                {% if ingredient %}required{% endif %}></textarea><br>
+                <button style="display: inline;"
+                    formaction="{{url_for('edit_recipe')}}?add_step&afterStep={{loop.index0}}" type="submit">Add
+                    Step</button>
+
+                <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?cancel_step" type="submit" onclick="keepFields()">cancel
+                    this step
+                </button>
+
+            </div>
+            {% endif %}
+
+
+            <br>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        {% if not steps %}
+        <div>
+
+            <div>
+                <fieldset>
+                    <legend>Enter at least one step</legend>
+
+                    <label for="step">Step:</label><br>
+                        <textarea id="step" name="step" minlength="5" maxlength="2000"
+                class="materialize-textarea validate" {% if recipe_description %} value="{{recipe_description}}"
+                {% endif %} placeholder="this field is still empty"
+                {% if ingredient %}required{% endif %}></textarea><br>
+
+                    <button style="display: inline;" formaction="{{url_for('edit_recipe')}}?add_step" type="submit" onclick="keepFields()">Add
+                        step</button>
+                </fieldset>
+            </div>
+
+
+            <br><br>
+        </div>
+        {% endif %}
+        <br><br>
+
+
+        <div id="tag" >
+    
+            
+            <input type="radio" id="sel_tags" name="tag" value="tags" >
+            <label for="sel_tags">select an existing tag</label>
+            <select id="pick_tag" name="pick_tag" required>
+            {% if tags %}
+            
+            <option selected disabled >select a tag</option>
+                {% for tag in tags %}
+            <option value="{{tag.tag}}">{{tag.tag}}</option>
+                {% endfor %}
+            
+            
+            <br><br>
+
+            {% endif %}
+            <option value="Other">Other</option>
+            </select>
+
+
+            <input type="radio" id="other_tag" name="tag" value="tags" >
+            <label for="new_tag">insert your own tag</label>
+            
+            <input id="new_tag" name="new_tag" type="text" class="validate" required disabled="true">
+            
+               
+            <button id="addTagBtn" style="display: block;" type="submit" value="addTagBtn" formaction="{{url_for('edit_recipe')}}?addTagBtn"
+                  onclick="addTag()">Add Tag</button>
+            <div id="tagList" style="list-style: none ;">
+                {% if tagsInput %}
+                
+                {% for tag in tagsInput %}
+
+                <div style="display: inline;">
+                <button formaction="{{url_for('edit_recipe')}}?delTag={{tag}}">
+                    {{tag}} X
+                </button>
+                </div>
+
+                {% endfor %}
+
+                {% endif %}
+
+            </div>
+        </div>
+        <br><br><br>
+
+{ else %}        
+
+<!-- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+<!-- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+{ endif %}
+
+        {% if session.user %}
+        <div class="">
+            <input id="author" name="author" type="hidden" class="validate" value="{{session.user}}" placeholder="">
+            <label for="author">by {{ session.user }}</label>
+        </div>
+        {% endif %}
+
+        
+        {% if not ingridients %}
+        {% if not steps %}
+        <div class="col s12 center-align">
+            <button type="submit" class="btn-large light-blue darken-1 text-shadow"
+                formaction="{{url_for('edit_recipe')}}?editRecipe=True" disabled onclick="clearFields()">
+                Edit Recipe <i class="fas fa-plus-square right"></i>
+            </button>
+        </div>
+        {% else %}
+        <div class="col s12 center-align">
+            <button type="submit" class="btn-large light-blue darken-1 text-shadow"
+                formaction="{{url_for('edit_recipe')}}?editRecipe=True" disabled onclick="clearFields()">
+                Edit Recipe <i class="fas fa-plus-square right"></i>
+            </button>
+        </div>
+        {% endif %}
+        {% else %}
+        {% if  steps %}
+        <div class="col s12 center-align">
+            <button type="submit" class="btn-large light-blue darken-1 text-shadow"
+                formaction="{{url_for('edit_recipe')}}?editRecipe=True" onclick="clearFields()">
+                Edit Recipe <i class="fas fa-plus-square right"></i>
+            </button>
+        </div>
+        {% else %}
+        <div class="col s12 center-align">
+            <button type="submit" class="btn-large light-blue darken-1 text-shadow"
+                formaction="{{url_for('edit_recipe')}}?editRecipe=True" disabled onclick="clearFields()">
+                Edit Recipe <i class="fas fa-plus-square right"></i>
+            </button>
+        </div>
+        {% endif  %}
+        {% endif  %}
+        
+
+
+        <div class="col s12 center-align">
+
+            <button style="display: inline;" type="button" onclick="clearFields()">
+                <a href="{{url_for('edit_recipe')}}?clear=True">Clear</a>
+            </button>
+
+        </div>
+        
+    </form>
+     
+
+
+{% endblock %}
+{% block extraScript %}
+<script src="{{ url_for('static', filename='js/script_edit_r.js') }}"></script>
+{% endblock %}
