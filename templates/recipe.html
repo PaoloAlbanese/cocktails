@@ -4,7 +4,6 @@
 <br><br>
 <div style="width: 68%;" class="mx-auto" >
 
-        <!-- <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" onclick="keepFields()" id="recipe_name"></a> -->
         <div class="my-5 p-3 bg-light " >
                     <div  style="display: flex; align-items: center;" >
                     <h5 class="text-primary" >{{ recipe.recipe_name }}</h5>
@@ -12,7 +11,7 @@
                             {% if session.user|lower == recipe.author|lower %}
                                 <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" style="display: inline;" class="mx-2 btn bg-warning rounded"><i class="far fa-edit text-light"></i></a>
                             {% endif %}
-                                <a  href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}" style="display: inline;" class="ml-2 btn bg-danger rounded"><i class="far fa-trash-alt text-light"></i></a>
+                                <a onclick="return confirm('Please confirm deletion of \'{{ recipe.recipe_name }}\' recipe ')" href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}" style="display: inline;" class="ml-2 btn bg-danger rounded"><i class="far fa-trash-alt text-light"></i></a>
                         {% endif %}
                     </div>
                 
@@ -55,10 +54,7 @@
                             </button>
                             </form>
                         </span>
-            {% endfor %}
-
-        
+            {% endfor %}       
     <br>
-
 </div>
 {% endblock %}

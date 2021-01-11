@@ -42,6 +42,8 @@
 }
 
 
+
+
 h3 {
     margin-bottom: 30px;
 }
@@ -52,6 +54,11 @@ fieldset {
     margin-top:50px;
     
     
+}
+
+
+.enteredIng p {
+    font-size: 1.2rem;
 }
 
 body {
@@ -79,17 +86,6 @@ a:visited {
     color: #007bff;
 }
 
-/* .enteredIngBtn {
-  transform: translateY(-50%);
-  transition: all 0.2s ease 0s;
-}
-
-.enteredIng:hover > .enteredIngBtn {
-  transform: translatey(+5%);
-} */
-
-/*ingriedint buttons visbilty toggle created merging codes from ucs-portfolio-api.000webhostapp.com on CodeGrepper and Robin Rendle on CSS Tricks */
-
 .enteredIngBtn {
   visibility: hidden;
   opacity: 0;
@@ -100,6 +96,14 @@ a:visited {
   visibility: visible;
   opacity: 1;  
   transition: visibility 0s linear 100ms, opacity 100ms;
+}
+
+.bgForm{
+    background-color:#56e8e3;
+}
+
+.bgFormA{
+    background-color:#e8d756;
 }
 
 /* */

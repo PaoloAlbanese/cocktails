@@ -13,7 +13,7 @@
                     </h3>
                     {% else %}
                     <h3 class="text-center text-primary">
-                       Hi, {{ username }}, 
+                       Hi {{ username }}, 
                        click on "Add Recepie" on the Navbar to add your first recepie!
                     </h3>
                     {% endif %}
@@ -45,7 +45,7 @@
                     </a>
                     {% endif %}
                     {% if session.user|lower == recipe.author|lower or session.user|lower == 'admin' %}
-                    <a href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}">
+                        <a onclick="return confirm('Please confirm deletion of \'{{ recipe.recipe_name }}\' recipe ')" href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}">
                         <i class="btn bg-danger rounded align-text-top fas fa-trash-alt text-light "></i>
                     </a>
                     {% endif %}

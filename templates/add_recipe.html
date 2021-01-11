@@ -1,119 +1,57 @@
 {% extends "base.html" %}
-
-<!-- <!DOCTYPE html>
-
-<html lang="en" id="theHtml" style="visibility: hidden;">
-<style>
-::placeholder {
-  color: red;
-  opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
- color: red;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
- color: red;
-}
-
-#time_notes::placeholder,
-#cook_time::placeholder,
-#ingridient_notes1::placeholder {
-  color: grey;
-  opacity: 1; /* Firefox */
-}
-
-#time_notes::-ms-input-placeholder { /* Internet Explorer 10-11 */
- color: grey;
-}
-
-
-#cook_time::-ms-input-placeholder { /* Microsoft Edge */
- color: grey;
-}
-
-
-.red_color{ color:red; }
-.black_color{ color:black; }
-</style>
-<head>
-    
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-
- -->
-
 {% block title %}
 <title>Add Recipe</title>
 {% endblock %}
 
-<!-- </head>
-
-
-<body> -->
 {% block content %}
 <br><br>
 <h3 class="mx-auto text-center text-primary">Add Recipe</h3>
 
 <div class="mx-auto" style="width:96%">
-    <!-- <div class="row"> -->
     <form method="POST" action="{{ url_for('add_recipe') }}" name="mainForm">
 
-        <div class="row">
-            <!--di head row-->
-            <div class="col-sm-11 col-md-4 mx-auto">
-                <!--col di head name-->
+        <div class="row my-2 p-2 bgForm border border-info">
+            <div class="col-sm-11 col-md-4 mx-auto ">
                 <div class="mt-4">
                     <label class="ml-1" for="recipe_name">Recipe Name</label>
                     <input id="recipe_name" name="recipe_name" type="text" class="form-control my-0"
                         {% if recipe_name %}value="{{recipe_name}}"
-                        {% else %}placeholder='required field, e.g. "Mojito with a twist"' {% endif %} required>
-
+                        {% else %}placeholder='required field, e.g. "Mojito with a twist"'{% endif %}required>
                 </div>
 
                 <div class="mt-4">
                     <label class="ml-1" for="recipe_description">Recipe Description</label>
                     <textarea id="recipe_description" name="recipe_description" minlength="5" maxlength="200"
-                        class="form-control mt-0" {% if recipe_description %} value="{{recipe_description}}" {% endif %}
+                        class="form-control mt-0" {% if recipe_description %} value="{{recipe_description}}"{% endif %}
                         placeholder="required field, a brief introduction to your recipe here"
                         required>{% if recipe_description %}{{recipe_description}}{% endif %}</textarea>
 
                 </div>
-
             </div>
-            <!--col di head name-->
+
             <div class="col-sm-11 col-md-4 mx-auto">
-                <!--col di head time-->
 
                 <div class="mt-4">
                     <label class="ml-1" for="time">Preparation Time</label><br>
                     <input class="form-control mt-0 " id="time" name="time" type="number" min="1"
-                        {% if time %}value="{{time}}" {% endif %} placeholder="time in minutes" required>
+                        {% if time %}value="{{time}}"{% endif %} placeholder="time in minutes" required>
                     <label class="ml-1 mt-4" for="cook_time">Cook Time, if any</label><br>
                     <input class="form-control mt-0 " id="cook_time" name="cook_time" type="number" min="1"
-                        {% if cook_time %}value="{{cook_time}}" {% endif %} placeholder="cook time in minutes, if any">
+                        {% if cook_time %}value="{{cook_time}}"{% endif %} placeholder="cook time in minutes, if any">
                     <label class="ml-1 mt-4" for="time_notes">Additional notes on time</label>
                     <textarea id="time_notes" name="time_notes" type="text" class="form-control mt-0"
-                        {% if time %}value="{% if time_notes %}{{time_notes}}{% endif %}" {% endif %}
+                        {% if time %}value="{% if time_notes %}{{time_notes}}{% endif %}"{% endif %}
                         placeholder='optional additional notes on time required e.g. "plus an hour to rest"'
                         style="color:black;"></textarea>
 
                 </div>
             </div>
-            <!--col di head name-->
         </div>
-        <!--di head row-->
 
         <br>
-        <div class="row mx-auto" style="width:80%">
-            <!--di row-->
-            <div class="col-sm-11 col-md-4 mx-auto">
+        <div class="row mx-auto " style="width:80%">
+            <div class="col-sm-11 col-md-4 mx-auto my-2 bgForm border border-info">
                 <h3 class="mx-auto text-center text-primary">Ingredients:</h3>
-                <!--col di ing-->
                 {% if ingridients %}
                 <div>
                     {% for ingridient in ingridients %}
@@ -191,11 +129,6 @@
                                 editing this ingredient
                             </button>
 
-                            <!-- <div class="col s12 center-align">
-
-
-                            </div> -->
-
                         </fieldset>
                     </div>
                     {% else %}
@@ -208,30 +141,22 @@
                             {% if ingridient[2] != 'not applicable' %}
                             {% if ingridient[2] == 'drops' %}{% if (ingridient[1])|string == '1'  %}drop{% else %}{{ingridient[2]}}{%endif%}{{ingridient[2]}}{% else %}{{ingridient[2]}}{% endif %}{% endif %}
                             {{ingridient[0]}}{% if ingridient[3] %},{% endif %} {{ingridient[3]}}</p>
-                        <!-- <button style="display: inline;"><a href="{{url_for('add_recipe', ingridient_pos_up=loop.index0)}}"> up {{ loop.index0}} </a></button>  -->
                         <button class="" formaction="{{url_for('add_recipe')}}?can_add_ing=True&afterIng={{loop.index0}}"
                             type="submit" onclick="keepFields()"><i class="fas fa-plus text-light"></i></button>
                         <i class="fas fa-wrench text-primary"></i>    
-                        <button style="display: inline;" class="enteredIngBtn"
+                        <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?ingridient_pos_up={{loop.index0}}"
                             onclick="keepFields()"><i class="fas fa-arrow-up text-light"></i></button>
-                        <button style="display: inline;" class="enteredIngBtn"
+                        <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?ingridient_pos_down={{loop.index0}}"
-                            onclick="keepFields()"><i class="fas fa-arrow-down text-light"></i></button>
-                        <!-- <button style="display: inline;"><a href="{{url_for('add_recipe', ingridient_pos_down=loop.index0)}}">down {{ loop.index0}}</a></button> -->
-                        <!-- <button style="display: inline;"><a href="{{url_for('add_recipe', ing_to_del=loop.index0)}}">delete this</a></button> -->
-                        <!-- <button  style="display: inline;" formaction="{{url_for('add_recipe')}}?ingridient_pos_down={{loop.index0}}"> down {{ loop.index0}}</button>  -->
-                        <!-- <button formaction="{{url_for('add_recipe')}}?del_ing=True&ing_to_del={{loop.index0}}"
-                    type="submit">delete this</button>
-                <br> -->
-                        
+                            onclick="keepFields()"><i class="fas fa-arrow-down text-light"></i></button>                      
 
 
-                        <button class="enteredIngBtn" style="display: inline;" type="button" onclick="keepFields()">
+                        <button class="enteredIngBtn bg-danger" style="display: inline;" type="button" onclick="keepFields()">
                             <a href=" {{url_for('add_recipe')}}?del_ing=True&ing_to_del={{loop.index0}}"><i class="fas fa-trash-alt text-light"></i></a>
                         </button>
 
-                        <button class="enteredIngBtn" style="display: inline;" type="button" onclick="keepFields()">
+                        <button class="enteredIngBtn bg-warning" style="display: inline;" type="button" onclick="keepFields()">
                             <a href=" {{url_for('add_recipe')}}?edit_ing=True&ing_to_edit={{loop.index0}}"><i class="far fa-edit text-light"></i></a>
                         </button>
 
@@ -252,8 +177,6 @@
                                 {% else %} value="{{incomplete_Ing[1]}}"
                                 {% endif %}{% else %}placeholder="this field is still empty" {% endif %}}><br>
                                 <label for="ingridient_unit3" class="ml-1 mt-1">Ingridient Unit</label><br>
-                                <!-- <input type="text" id="ingridient_unit1" name="ingredient1" value="" placeholder="required field" -->
-                                <!-- required><br> -->
 
                                 <select name="ingredient1" id="ingridient_unit1" class="red_color form-control mt-0">
                                     <option value="">select a measure</option>
@@ -323,7 +246,6 @@
                     {% endfor %}
                 </div>
                 {% endif %}
-                <!-- <form action="{{url_for('add_recipe')}}?add_ingridient=yes"  -->
 
                 {% if not ingridients %}
                 <div>
@@ -340,8 +262,6 @@
                             name="ingredient1" {% if incomplete_Ing[1] %}value="{{incomplete_Ing[1]}}" {% else %}
                             placeholder="required field" {% endif %} required><br>
                         <label for="ingridient_unit3" class="ml-1 mt-1">Ingridient Unit:</label><br>
-                        <!-- <input type="text" id="ingridient_unit1" name="ingredient1" value="" placeholder="required field" -->
-                        <!-- required><br> -->
 
                         <select name="ingredient1" id="ingridient_unit1" class="red_color form-control mt-0" required>
                             <option selected disabled value="">select a measure</option>
@@ -367,24 +287,16 @@
                             ingredient</button>
 
 
-                        <!-- <input type="submit" value="Add ingredient" method="post"> -->
-
-                        <!-- <button style="display: inline;" type="button">
-                    <a href="{{url_for('add_recipe')}}?add_ingridient" >Add
-                    ingredient</a>
-                </button> -->
-
                     </fieldset>
                 </div>
                 {% endif %}
             </div>
-            <!--col di ing-->
 
             <br>
 
-            <div class="col-sm-11 col-md-6 mx-auto">
+            <div class="col-sm-11 col-md-6 mx-auto my-2 bgForm border border-info">
                 <h3 class="mx-auto text-center text-primary">Method:</h3>
-                <!--col di ing-->
+
                 {% if steps %}
                 <div>
                     {% for step in steps %}
@@ -415,22 +327,21 @@
                         
                         <i class="fas fa-wrench text-primary"></i>
 
-                        <button style="display: inline;" class="enteredIngBtn"
+                        <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?step_pos_up={{loop.index0}}" onclick="keepFields()">
                             <i class="fas fa-arrow-up text-light"></i>
                             </button>
-                        <button style="display: inline;" class="enteredIngBtn"
+                        <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?step_pos_down={{loop.index0}}" onclick="keepFields()">
                             <i class="fas fa-arrow-down text-light"></i></button>
-                        <!-- <button formaction="{{url_for('add_recipe')}}?del_step=True&step_to_del={{loop.index0}}"
-                    type="submit">delete this</button><br> -->
+
                         
 
-                    <button class="enteredIngBtn" style="display: inline;" type="button" onclick="keepFields()">
+                    <button class="enteredIngBtn bg-danger" style="display: inline;" type="button" onclick="keepFields()">
                         <a href="{{url_for('add_recipe')}}?del_step=True&step_to_del={{loop.index0}}"><i class="fas fa-trash-alt text-light"></i></a>
                     </button>
 
-                    <button class="enteredIngBtn" style="display: inline;" type="button" onclick="keepFields()">
+                    <button class="enteredIngBtn bg-warning" style="display: inline;" type="button" onclick="keepFields()">
                         <a href=" {{url_for('add_recipe')}}?edit_step=True&step_to_edit={{loop.index0}}"><i class="far fa-edit text-light"></i></a>
                     </button>
                     </div>
@@ -441,7 +352,6 @@
                     <div>
 
                         <label for="step">Step:</label><br>
-                        <!-- <input type="text" id="step" name="step" placeholder="this field is still empty"><br> -->
                         <textarea class="form-control" id="step" name="step" minlength="5" maxlength="2000"
                             {% if recipe_description %} value="{{recipe_description}}" {% endif %}
                             placeholder="this field is still empty"
@@ -473,8 +383,6 @@
                             <legend>Enter at least one step</legend>
 
                             <label for="step">Step:</label><br>
-                            <!-- <input type="text" id="step" name="step" value="" placeholder="this field is still empty"
-                        {% if ingredient %}required{% endif %}><br> -->
                             <textarea class="form-control" id="step" name="step" minlength="5" maxlength="2000"
                                 {% if recipe_description %} value="{{recipe_description}}" {% endif %}
                                 placeholder="this field is still empty"
@@ -485,44 +393,25 @@
                                 step</button>
                         </fieldset>
                     </div>
-                    <!-- <input type="submit" value="Add ingredient" method="post"> -->
 
                     <br><br>
                 </div>
                 {% endif %}
             </div>
-            <!--col di ing-->
+
         </div>
-        <!--di row-->
+
         <br>
-        <!-- </div> -->
 
-        <!-- <div class="input-field col s12">
-                    <i class="fas fa-user-circle prefix light-blue-text text-darken-4"></i>
-                    <input id="step1" name="step1" type="text" class="validate">
-                    <label for="step1">Step 1</label>
-                </div>
 
-                <div class="input-field col s12">
-                    <i class="fas fa-user-circle prefix light-blue-text text-darken-4"></i>
-                    <input id="step2" name="step2" type="text" class="validate">
-                    <label for="step2">Step 2</label>
-                </div> -->
-
-        <div id="tag">
+        <div id="tag" class="my-2 p-2 bgForm border border-info">
             <h3 class="mx-auto text-center text-primary">Tags:</h3>
-            <!-- <input type="text" list="cars" style="background:url('images/arrow_down.png') no-repeat right center">
-            <datalist id="cars">
-            <option>Volvo</option>
-            <option>Saab</option>
-            <option>Mercedes</option>
-            <option>Audi</option>
-            </datalist> -->
+
             <div class="row mr-auto" style="width:70%;">
                 
-                <!--row di tag-->
+
                 <div class="col-sm-11 col-md-4 mx-auto mt-4">
-                    <!--col di sel tag-->
+
                     <label for="sel_tags">select an existing tag</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -541,10 +430,9 @@
                         </select>
                     </div>
                 </div>
-                <!--col di sel tag-->
+
 
                 <div class="col-sm-11 col-md-4 mx-auto mt-4">
-                    <!--col di new tag-->
                     <label for="new_tag">insert your own tag</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -556,29 +444,19 @@
                         <input id="new_tag" class="form-control m-0" name="new_tag" type="text"
                             placeholder="insert your own tag" required disabled="true">
 
-                        <!-- <input id="new_tag" name="new_tag" type="text" class="validate" required> -->
-                        <!-- <input id="tagsInput" name="tagsInput" type="hidden"> -->
                     </div>
                 </div>
-                <!--col di new tag-->
             </div>
-            <!--row di tag-->
             <br>
             <div class="row">
-                <!--row di tag btn and tags-->
                 <div class="col-sm-10  mx-auto mt-4" style="display: flex; justify-content: left;">
-                    <!--col di btn tag-->
                     <button id="addTagBtn" type="submit" value="addTagBtn"
                         formaction="{{url_for('add_recipe')}}?addTagBtn" onclick="keepFields()">Add Tag</button>
                 </div>
-                <!--col di btn tag-->
             </div>
-            <!--row di tag btn and tags-->
 
             <div class="row">
-                <!--row di tags inputs-->
                 <div class="col-sm-10  mx-auto mt-4" style="display: flex; justify-content: left;">
-                    <!--col di tags input-->
                     <div id="tagList" style="list-style: none ;">
                         {% if tagsInput %}
                         {% for tag in tagsInput %}
@@ -593,24 +471,18 @@
                         {% endif %}
                     </div>
                 </div>
-                <!--col di tags input-->
             </div>
-            <!--row di tags inputs-->
         </div>
 
 
         <div class="row">
-            <div class="col-sm-4  mx-auto mt-4" style="">
+            <div class="col-sm-4  mx-auto mt-4">
                 <br><br><br>
                 {% if session.user %}
                 <div class="">
                     <input id="author" name="author" type="hidden" class="" value="{{session.user}}" placeholder="">
                 </div>
                 {% endif %}
-
-                <!-- </div> -->
-                <!-- submit button -->
-                <!-- <div class="row"> -->
 
                 {% if not ingridients %}
                 {% if not steps %}
@@ -645,7 +517,6 @@
                 <br>
                 <div class="">
 
-                    <!-- <input id="clear" name="clear" type="hidden" value="True"> -->
                     <button style="display: block;" class="mx-auto " type="button" onclick="clearFields()">
                         <a style=" color:white!important;" href="{{url_for('add_recipe')}}?clear=True">Clear</a>
                     </button>
@@ -661,360 +532,14 @@
                     </div>
                 <br>
                 </div>
-                <!-- </div> -->
-
-                <!-- </div> -->
                 </div>
         </form>
 </div>
 <br><br>
-<!-- <script type="text/javascript">
-var theHtml = document.getElementById("theHtml");
-var classList = theHtml.classList;
 
-setTimeout(alertFunc, 300);
-
-function alertFunc() {
-$(document).ready(function() {
-
-  
-  document.getElementsByTagName("html")[0].style.visibility = "visible";
-
-
-    while (classList.length > 0) {
-   classList.remove(classList.item(0));
-} 
-
-});
-}
-
-</script>
-
-    <script>
-        window.onload = function() {
-        var storedDescription = localStorage.getItem("description");
-        var storedName = localStorage.getItem("rName");
-        var storedTime = localStorage.getItem("rTime");
-        var storedCookTime = localStorage.getItem("CookTime");
-        var storedTimeNotes = localStorage.getItem("timeNotes");
-        // document.getElementById('pick_tag').disabled = true;
-        document.getElementById('addTagBtn').disabled = true;
-
-        if (localStorage.getItem('tags') !== null) {
-            console.log(`tags  exists`);
-        } else {
-            console.log(`tags not found`);
-        }
-
-
-
-        
-        // printedTags = JSON.parse(localStorage.getItem("tags"));
-        // // printedTags = printedTags.toString();
-        // if (! printedTags){
-        //     printedTags =[]
-        // };
-        // // document.getElementById("tagsInput").value == printedTags;
-        // console.log('printedTags', printedTags)
-
-        // var ulDiv = document.getElementById("tagList");
-        
-        //     for (tag in printedTags){
-        //         var liSpan = document.createElement("button");
-        //         var liInput = document.createElement("input");
-        //         tagValue= printedTags[tag].valueOf();
-        //         // tagValue= printedTags[tag];
-        //         // li.setAttribute("name", "tagsInput");
-        //         liInput.setAttribute("name", "tagsInput");
-        //         liInput.setAttribute("value", tagValue);
-        //         liInput.setAttribute("type", "hidden");
-        //         liSpan.textContent = tagValue + ' X';
-                
-        //         // li.appendChild(document.createTextNode("hai rotto "+ tagValue));
-        //         // li.appendChild(document.innerHTML("hai rotto "+ tagValue));
-                
-        //         // ulDiv.appendChild(li)
-        //         ulDiv.appendChild(liInput)
-        //         ulDiv.appendChild(liSpan)
-
-        //     }
-
-            if (storedName) {
-                rName = storedName;
-            }
-       
-            else {
-            rName = "";
-            }
-            var nameField = document.getElementById("recipe_name");
-            nameField.value = rName;
-
-
-            if (storedDescription) {
-                description = storedDescription;
-            }
-       
-            else {
-            description = "";
-            }
-            var Descriptione = document.getElementById("recipe_description");
-            Descriptione.innerHTML = description;
-
-
-            if (storedTime) {
-                rTime = storedTime;
-            }
-       
-            else {
-            rTime = "";
-            }
-            var timeField = document.getElementById("time");
-            timeField.value = rTime;
-
-            if (storedCookTime) {
-                CookTime = storedCookTime;
-            }
-       
-            else {
-            CookTime = "";
-            }
-            var CookTimeField = document.getElementById("cook_time");
-            CookTimeField.value = CookTime;
-
-            if (storedTimeNotes) {
-                timeNotes = storedTimeNotes;
-            }
-       
-            else {
-            timeNotes = "";
-            }
-            var timeNotesField = document.getElementById("time_notes");
-            timeNotesField.value = timeNotes;
-
-            
-        };
-
-        function keepFields(){
-        description = document.getElementById("recipe_description").value;
-        rName = document.getElementById("recipe_name").value;
-        rTime = document.getElementById("time").value;
-        timeNotes = document.getElementById("time_notes").value;
-        CookTime = document.getElementById("cook_time").value;
-        console.log(description)
-        console.log(rName)
-
-        if (rName) {
-            localStorage.setItem('rName', rName);
-        }
-        else {
-            var storedName = localStorage.getItem("rName");
-        
-        }
-        
-        if (description) {
-            localStorage.setItem('description', description);
-        }
-        else {
-            var storedDescription = localStorage.getItem("description");
-        
-        }
-
-        if (rTime) {
-            localStorage.setItem('rTime', rTime);
-        }
-        else {
-            var storedTime = localStorage.getItem("rTime");
-        
-        }
-
-        if (CookTime) {
-            localStorage.setItem('CookTime', CookTime);
-        }
-        else {
-            var storedCookTime = localStorage.getItem("CookTime");
-        
-        }
-
-        if (timeNotes) {
-            localStorage.setItem('timeNotes', timeNotes);
-        }
-        else {
-            var storedTimeNotes = localStorage.getItem("timeNotes");
-        
-        }
-        
-    }
-
-    function clearFields(){
-        localStorage.removeItem('description');
-        localStorage.removeItem('rName');
-        localStorage.removeItem('rTime');
-        localStorage.removeItem('timeNotes');
-        localStorage.removeItem('tags');
-        localStorage.removeItem('CookTime');
-        // var Descriptione = document.getElementById("recipe_description");
-        // Descriptione.innerHTML = "";
-        // Descriptione.value = "";
-
-    }
-
-    // var tags = document.getElementById("tags");
-    // tags.addEventListener("change", function() {
-    // if(tags.value == "Other")
-    // {   
-    //     console.log("other was selected")
-    //     addActivityItem();
-    // }
-// });
-
-// var pick_tag = document.getElementById("pick_tag");
-// var new_tag = document.getElementById("new_tag"); 
-// pick_tag.addEventListener("focus", function() {
-//     // document.getElementById("new_tag").disabled = true;
-//             document.getElementById("new_tag").value = "";
-//             document.getElementById("new_tag").blur();
-//             document.getElementById("pick_tag").disabled= false;
-//             document.getElementById("pick_tag").required = true;
-//             pick_tag.addEventListener("change", function() {
-//             if (document.getElementById("pick_tag").value == "select a tag"){
-//                 addTagBtn.disabled=true;
-//             }
-//             else{
-//                 document.getElementById("new_tag").required = false;
-//                 addTagBtn.disabled=false;
-//             }
-//         }
-//         });
-
-// new_tag.addEventListener("focus", function() {
-
-//     // document.getElementById("new_tag").disabled = false;
-//             document.getElementById("new_tag").required = true;
-//             // document.getElementById("pick_tag").disabled = true;
-//             document.getElementById("pick_tag").value = "select a tag";
-//             document.getElementById("pick_tag").blur();
-//             addTagBtn.disabled=false;
-// });
-
-
-
-var tags = document.getElementById("tags");
-var tag = document.getElementById("tag");
-var tags = []
-
-    tag.addEventListener("change", function() {
-        var addTagBtn = document.getElementById('addTagBtn');
-// window.onload = function display() {
-        // if (document.getElementById('pick_tag').onFocus) {
-        if (document.getElementById('sel_tags').checked) {
-            document.getElementById("new_tag").disabled = true;
-            document.getElementById("new_tag").value = "";
-            // document.getElementById('other_tag').checked = false
-            document.getElementById("pick_tag").disabled= false;
-            document.getElementById("pick_tag").required = true;
-            if (document.getElementById("pick_tag").value == "select a tag"){
-                addTagBtn.disabled=true;
-            }
-            else{
-                addTagBtn.disabled=false;
-            }     
-            // tags.value += document.getElementById("pick_tag").value
-            // tags.push(document.getElementById("pick_tag").value)
-            console.log('sel tag selcted')
-            console.log('tags', tags)
-            
-        }
-        else if (document.getElementById('other_tag').checked) {
-            // document.getElementById('sel_tags').checked = false
-            // document.getElementById('new_tag').checked = false
-            document.getElementById("new_tag").disabled = false;
-            document.getElementById("new_tag").required = true;
-            document.getElementById("pick_tag").disabled = true;
-            // if (document.getElementById("new_tag").value == ""){
-            addTagBtn.disabled=false;
-            // if (! document.getElementById("new_tag").value){
-            //     addTagBtn.disabled=true;
-            //     console.log('non ha scritto niemte ')
-            // }
-            // else{
-            //     addTagBtn.disabled=false;
-            //     console.log('dovea scriver qua ')
-            // }
-          
-            // tags.value += document.getElementById("new_tag").value
-            // tags.push (document.getElementById("new_tag").value)
-            console.log('new tag selcted')
-            console.log('tags', tags)
-        }
-  });
-
-
-
-  function addTag(){
-    //   var printedTags =[]
-        
-      if (document.getElementById('sel_tags').checked) {
-        printedTags.push(document.getElementById("pick_tag").value)
-      localStorage.setItem('tags', JSON.stringify(printedTags));
-        // var li = document.createElement("li");
-        // li.setAttribute("name", "tagsInput");
-        // li.setAttribute("value", document.getElementById("pick_tag").value);
-        // // li.appendChild(document.createTextNode(str(tag.value)));
-        // ul.appendChild(li)
-
-      }
-      else if (document.getElementById('other_tag').checked){
-        printedTags.push(document.getElementById("new_tag").value)
-        localStorage.setItem('tags', JSON.stringify(printedTags));
-        //   var li = document.createElement("li");
-        // li.setAttribute("name", "tagsInput");
-        // li.setAttribute("value", document.getElementById("pick_tag").value);
-        // // li.appendChild(document.createTextNode(str(tag.value)));
-        // ul.appendChild(li)
-      }
-      
-        
-        // for (tag in printedTags){
-      
-        // }
-      
-      console.log('printedTags', printedTags)
-
-  }
-
-
-$(document).ready(function(){
-    var valsel = $('#ingridient_unit1').children("option:selected").val();
-    console.log('funziona stacosa?', valsel );
-    if (valsel == ''){
-        $('#ingridient_unit1').removeClass('black_color').addClass('red_color');
-        console.log('funziona stacosa davero?', valsel )
-    }
-    else{
-        $('#ingridient_unit1').removeClass('red_color').addClass('black_color');
-
-    }
-});
-
-$('#ingridient_unit1').change(function(e) {
-    var valsel = $(this).children("option:selected").val();
-    console.log('funziona stacosa?', valsel );
-    if (valsel == ''){
-        $(this).removeClass('black_color').addClass('red_color');
-        console.log('funziona stacosa davero?', valsel )
-    }
-    else{
-        $(this).removeClass('red_color').addClass('black_color');
-
-    }
-});
-    </script> -->
 
 {% endblock %}
 
 {% block extraScript %}
 <script src="{{ url_for('static', filename='js/script_add_r.js') }}"></script>
 {% endblock %}
-<!-- </body>
-
-</html> -->

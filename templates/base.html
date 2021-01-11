@@ -50,10 +50,12 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
         {% for author in authors %}
-          <a class="dropdown-item text-dark" href="{{ url_for('author', username=author.username) }}">{{ author.username }}</a>
-         {% endfor %} 
+            {% if author.username != 'admin' %}
+          <a class="dropdown-item text-dark" href="{{ url_for('author', username=author.username) }}"><i class="far fa-user"></i> {{ author.username }}</a>
+            {% endif %}
+         {% endfor %}
         </div>
-      </li>
+    </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="{{ url_for('search') }}">
       <input class="form-control mr-sm-2" type="search" id="search" placeholder="Search" name="search">
