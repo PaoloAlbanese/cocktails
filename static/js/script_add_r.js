@@ -6,6 +6,18 @@
         var storedTimeNotes = localStorage.getItem("timeNotes");
         // var storedRecipeId = localStorage.getItem("RecipeId");
         document.getElementById('addTagBtn').disabled = true;
+        
+
+        if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+        }
+
+        // var input = document.querySelectorAll('input'+':placeholder-shown');
+        // if (input){
+        // for(i=0; i<input.length; i++){
+        //     input[i].setAttribute('size',input[i].getAttribute('placeholder').length);
+        //     }
+        // }
 
         // var recipeExists = {{% recipe %}};
         // console.log( recipeExists)

@@ -16,11 +16,18 @@
         // var recipeExists = {{% recipe %}};
         // console.log( recipeExists)
 
+        if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+        }
+
+
+
         if (localStorage.getItem('tags') !== null) {
             console.log(`tags  exists`);
         } else {
             console.log(`tags not found`);
         }
+
 
             // if (storedRecipeId) {
             //     RecipeId = storedRecipeId;
@@ -270,3 +277,4 @@ $('#ingridient_unit1').change(function(e) {
 
     }
 });
+

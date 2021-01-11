@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
 
     
@@ -11,9 +12,11 @@
     {% endblock %}
     
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-  <a class="navbar-brand" href="#">Navbar</a>
+<body id="contenuto">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top " style="background-color: #48D1CC;">
+        
+  <a class="navbar-brand text-danger" href="/" style="" ><strong>Cocktails Galore</strong></a>
+        
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -21,43 +24,40 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link text-white" href="/">Home</a>
       </li>
       <li class="nav-item">
     {% if session.user %}      
-        <a class="nav-link" href="{{ url_for('profile', username=session['user']) }}">Profile</a>
+        <a class="nav-link text-white" href="{{ url_for('profile', username=session['user']) }}">Your Recipes, {{session.user}}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('add_recipe', clear=True) }}" onclick="clearFields()">Add Recipe</a>
+        <a class="nav-link text-white" href="{{ url_for('add_recipe', clear=True) }}" onclick="clearFields()">Add Recipe</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        <a class="nav-link text-white" href="{{ url_for('logout') }}">Logout</a>
       </li>
     {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+        <a class="nav-link text-white" href="{{ url_for('login') }}">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+        <a class="nav-link text-white" href="{{ url_for('register') }}">Register</a>
       </li>
     {% endif %}
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Recipes by Author
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
         {% for author in authors %}
-          <a class="dropdown-item" href="{{ url_for('author', username=author.username) }}">{{ author.username }}</a>
+          <a class="dropdown-item text-dark" href="{{ url_for('author', username=author.username) }}">{{ author.username }}</a>
          {% endfor %} 
         </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="{{ url_for('search') }}">
       <input class="form-control mr-sm-2" type="search" id="search" placeholder="Search" name="search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" >Search</button>
+      <button class="btn btn-outline-success my-2 my-sm-0 text-white" type="submit" >Search</button>
     </form>
   </div>
 </nav>
@@ -66,7 +66,7 @@
 {% if messages  %}
 <div class="row bg-primary">
     {% for message in messages %}
-    <h3 class="text-center mx-auto">{{ message }}</h3>
+    <h3 class="text-center mx-auto my-auto text-white">{{ message }}</h3>
     {% endfor %}
 </div>
 {% endif %}
@@ -80,6 +80,7 @@
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% block extraScript %}
 {% endblock %}
-
+<input type="hidden" name="this_url" id="this_url" value={{this_url}}>
+<input type="hidden" name="referer_view" id="referer_view" value={{referer_view}}>
 </body>
 </html>

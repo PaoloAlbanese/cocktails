@@ -1,21 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 <br><br>
-    <div class="row">
+<div style="width: 98%;" class="mx-auto" >
+    <div class="row mx-auto" style="width: 98%;">
         <div class="col-sm-10 col-lg-8 mx-auto">
             <div class="card-panel">
                 {% if session.user %}
                 {% if session.user == username %}
-                    <h3 class="text-center">
+                    {% if recipes %}
+                    <h3 class="text-center text-primary">
                        Your Recepies, {{ username }}
                     </h3>
+                    {% else %}
+                    <h3 class="text-center text-primary">
+                       Hi, {{ username }}, 
+                       click on "Add Recepie" on the Navbar to add your first recepie!
+                    </h3>
+                    {% endif %}
                 {% else %}     
-                    <h3 class="text-center">
+                    <h3 class="text-center text-primary">
                         {{ username }}'s Recepies
                     </h3>
                 {% endif %}    
                 {% else %}     
-                    <h3 class="text-center">
+                    <h3 class="text-center text-primary">
                         {{ username }}'s Recepies
                     </h3>
                 {% endif %}
@@ -23,39 +31,42 @@
             </div>
         </div>
     </div>
-    <br><br>
-    <div class="row">
-                    <div class="col-sm-10 col-lg-8 mx-auto">
+    <br>
+    <div class="row mx-auto" style="width: 98%;">
+        <div class="col-sm-10 col-lg-8 mx-auto">
                         {% for recipe in recipes %}
-                            <a href="{{ url_for('recipe', recipe_id=recipe._id) }}">{{ recipe.recipe_name }}</a>
-                            {% if session.user %}
+            <div class="my-5 p-3 bg-light">
+
+                    <a href="{{ url_for('recipe', recipe_id=recipe._id) }}"><h5>{{ recipe.recipe_name }}</h5></a>
+                    {% if session.user %}
                     {% if session.user|lower == recipe.author|lower %}
-                    <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" onclick="keepFields()" id="recipe_name">
-                        <button type="submit" class="btn-large light-blue darken-1 text-shadow" onclick="keepFields()">
-                            Edit Recipe <i class="fas fa-plus-square right"></i>
-                        </button>
+                    <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" id="recipe_name">
+                        <i class="btn bg-warning rounded align-text-top fas fa-edit text-light "></i>
                     </a>
                     {% endif %}
                     {% if session.user|lower == recipe.author|lower or session.user|lower == 'admin' %}
                     <a href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}">
-                        <button type="submit" class="btn-large light-blue darken-1 text-shadow">
-                            Delete Recipe <i class="fas fa-plus-square right"></i>
-                        </button>
+                        <i class="btn bg-danger rounded align-text-top fas fa-trash-alt text-light "></i>
                     </a>
                     {% endif %}
                     {% endif %}
+                <br><br>
+                <p>{{ recipe.recipe_description }}</p>
+                <p class="mb-0"><strong>Preparation Time: </strong>{{ recipe.time[0] }} minutes</p>
+                {% if recipe.time[1] %}<p class="my-0"><strong>Cook Time: </strong>{{ recipe.time[1] }} minutes</p>{% endif %}
+                {% if recipe.time[2] %}<p class="mt-0">{{ recipe.time[2] }}</p>{% endif %}
                 <br>
-                {{ recipe.recipe_description }}<br>
-                <p>Preparation Time: {{ recipe.time[0] }} minutes</p><br>
-                {% if recipe.time[1] %}<p>Cook Time: {{ recipe.time[1] }} minutes</p><br>{% endif %}
-                {% if recipe.time[2] %}<p>{{ recipe.time[2] }}</p><br>{% endif %}
-                {{ recipe.tags }}<br>
-                {% if not session.user %}
-                {{ recipe.author }}<br>
-                {% endif %}
-            <br>
+                {% for tag in recipe.tags|sort %}       
+                            <span type="submit" formaction="{{ url_for('search') }}" 
+                                class="badge badge-pill my-1" style="background-color: #17a2b8!important; outline: none!important;margin-left: 0!important;margin-right: 0!important">
+                                <span class="align-text-top p-0 m-0 text-white" style="font-size:0.7rem">{{tag}}</span>
+                            </span>         
                 {% endfor %}
+                
+            </div>      
+                {% endfor %}
+            
         </div>
     </div>
-
+</div>
 {% endblock %}

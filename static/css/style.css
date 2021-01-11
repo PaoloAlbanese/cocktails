@@ -14,7 +14,8 @@
 #time_notes::placeholder,
 #cook_time::placeholder,
 #ingridient_notes1::placeholder,
-#search::placeholder {
+#search::placeholder,
+#new_tag::placeholder {
   color: grey!important;
   opacity: 1!important; /* Firefox */
 }
@@ -28,6 +29,82 @@
  color: grey!important;
 }
 
+#ingridient_notes1::-ms-input-placeholder { /* Microsoft Edge */
+ color: grey!important;
+}
 
+#search::-ms-input-placeholder { /* Microsoft Edge */
+ color: grey!important;
+}
+
+#new_tag::ms-input-placeholder { /* Microsoft Edge */
+ color: grey!important;
+}
+
+
+h3 {
+    margin-bottom: 30px;
+}
+
+fieldset {
+    
+    margin:auto;
+    margin-top:50px;
+    
+    
+}
+
+body {
+    background-color: rgba(65, 206, 216, 0.541);
+}
+
+input, textarea {
+    margin:3px;
+}
+
+p {
+    word-wrap: break-word;
+}
+
+button {
+    margin:3px 2px 2px 2px;
+    background-color: #007bff!important;
+    border-radius: 5px;
+    color:#fff;
+    font-size: 1.2rem;
+    outline: none!important;
+}
+
+a:visited {
+    color: #007bff;
+}
+
+/* .enteredIngBtn {
+  transform: translateY(-50%);
+  transition: all 0.2s ease 0s;
+}
+
+.enteredIng:hover > .enteredIngBtn {
+  transform: translatey(+5%);
+} */
+
+/*ingriedint buttons visbilty toggle created merging codes from ucs-portfolio-api.000webhostapp.com on CodeGrepper and Robin Rendle on CSS Tricks */
+
+.enteredIngBtn {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 100ms, opacity 100ms;
+}
+
+.enteredIng:hover > .enteredIngBtn {
+  visibility: visible;
+  opacity: 1;  
+  transition: visibility 0s linear 100ms, opacity 100ms;
+}
+
+/* */
+
+
+.card {width:98%!important}
 .red_color{ color:red; }
 .black_color{ color:black; }

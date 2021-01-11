@@ -11,54 +11,75 @@
 <body> -->
     {% block content %}
     <br>
-    {% if queryTerm %}
-    <h1 class="mx-auto">{{queryTerm}}</h1>
-    {% else %}
-    <h1 class="mx-auto">Displaying all Recipes</h1>
-    {% endif %}
+    
+    <div class="row mx-auto " style="width:94%; ">
+        <div class="col-sm-10 mx-auto " >
+            {% if queryTerm %}
+            <h1 class="text-center text-primary">{{queryTerm}}</h1>
+            {% else %}
+            <h1 class="text-center text-primary">Displaying all Recipes</h1>
+            {% endif %}
+        </div>
+    <br><br><br>
+
+    
     {% for recipe in recipes %}
-        <a href="{{ url_for('recipe', recipe_id=recipe._id) }}">{{ recipe.recipe_name }}</a>
+    
+    <div class="col-sm-7 col-md-3 col-xl-2 mx-auto my-2 p-3 card bg-light" style="box-sizing: content-box;" >
+        
 
-        {% if session.user %}
-        {% if session.user|lower == recipe.author|lower %}
-        <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" onclick="keepFields()" id="recipe_name">
-            <button type="submit" class="btn-large light-blue darken-1 text-shadow" onclick="keepFields()">
-                Edit Recipe <i class="fas fa-plus-square right"></i>
-            </button>
-        </a>
-        {% endif %}
-        {% if session.user|lower == recipe.author|lower or session.user|lower == 'admin' %}
-        <a href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}">
-            <button type="submit" class="btn-large light-blue darken-1 text-shadow">
-                Delete Recipe <i class="fas fa-plus-square right"></i>
-            </button>
-        </a>
-        {% endif %}
-        {% endif %}
 
-        <br>
-        {{ recipe.recipe_description }}<br>
-        <p>Preparation Time: {{ recipe.time[0] }} minutes</p><br>
-        {% if recipe.time[1] %}<p>Cook Time: {{ recipe.time[1] }} minutes</p><br>{% endif %}
-        {% if recipe.time[2] %}<p>{{ recipe.time[2] }}</p><br>{% endif %}
+        <div class="card-body" >
+            <div style="display: flex; align-items: center;" >
+            <a href="{{ url_for('recipe', recipe_id=recipe._id) }}" style="display: inline;"><h4 style="display: inline;" class="mr-1" >{{ recipe.recipe_name }}</h4></a>
+            {% if session.user %}
+                    {% if session.user|lower == recipe.author|lower or session.user|lower == 'admin' %}
+                    
+                    {% if session.user|lower == recipe.author|lower %}
+                        <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" style="display: inline;" class="mx-1 btn bg-warning rounded"><i class="far fa-edit text-light"></i></a>
+                    {% endif %}
+                        <a  href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}" style="display: inline;" class="mx-1 btn bg-danger rounded"><i class="far fa-trash-alt text-light"></i></a>
+                    
+                    {% endif %} 
+                {% endif %}
+            </div>
+            <p>by <a href="{{ url_for('author', username=recipe.author) }}" class="">{{ recipe.author }}</a></p>
+            <p class="card-text">{{ recipe.recipe_description }}</p>
+        </div>
+        
+    
+        <div class="card-body">
+            <ul class="list-group list-group-flush" >
+                <li class="list-group-item"><strong>Prep Time: </strong>{{ recipe.time[0] }} minutes</li>
+                {% if recipe.time[1] %}
+                <li class="list-group-item"><strong>Cook Time: </strong>{{ recipe.time[1] }} minutes</li>
+                {% endif %}
+                {% if recipe.time[2] %}
+                <li class="list-group-item">{{ recipe.time[2] }}</li>
+                {% endif %}
+            </ul>
+        </div>
 
-        {% for ingridient in recipe.ingridients %}
-            
-            <!-- <p class="">{{ingridient[1]}} {% if ingridient[2] != 'not applicable' %}{{ingridient[2]}}{% endif %} {{ingridient[0]}} {{ingridient[3]}}</p> -->
+        
+        <div class="card-body" >
+            {% for tag in recipe.tags|sort %}
+            <span style="margin: 0!important">
+                            <form style="display: inline!important;" ><input type="hidden" method="post" name="search" value="{{tag}}">
+                            <button type="submit" formaction="{{ url_for('search') }}" 
+                                class="badge badge-pill my-1" style="background-color: #17a2b8!important; outline: none!important;margin-left: 0!important;margin-right: 0!important">
+                                <span class="align-text-top p-0 m-0 text-white" style="font-size:0.7rem">{{tag}} <span class="badge badge-pill badge-secondary " style="font-size:0.7rem"><span class="align-text-middle p-0 m-0"><i class="fas fa-search"></i></span>
+                                    </span></span>
+                            </button>
+                            </form>
+                        </span>
+            {% endfor %}
 
-            <p>{% if ingridient[2] == 'not applicable' %}{% if ingridient[1]|string == '0.5'  %}1/2 {% elif ingridient[1]|string == '0.25'  %}1/4 {% elif ingridient[1]|string == '0.75'  %}3/4 {% elif ingridient[1]|string == '1'  %} {% else %}{{ingridient[1]}}{% endif %}{% elif ingridient[2] != 'not applicable' %}{{ingridient[1]}}{% endif %} 
-                                            {% if ingridient[2] != 'not applicable' %} {% if ingridient[2] == 'drops' %}{% if (ingridient[1])|string == '1'  %}drop{% else %}{{ingridient[2]}}{%endif%}{{ingridient[2]}}{% else %}{{ingridient[2]}}{% endif %}{% endif %} 
-                                            {{ingridient[0]}}{% if ingridient[3] %},{% endif %} {{ingridient[3]}}</p>
+        </div>
+      
 
+    </div>
         {% endfor %}
-        {% for step in recipe.steps %}
-        <h6>Step {{ loop.index }}:</h6>
-        <p>{{ step }}</p>
-        {% endfor %}
-        {{ recipe.tags }}<br>
-        {{ recipe.author }}<br>
-    <br>
-        {% endfor %}
+    
 
     {% endblock %}    
 <!-- </body>
