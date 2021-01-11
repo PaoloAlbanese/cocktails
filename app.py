@@ -1046,6 +1046,10 @@ def get_referer_view(request, default=None):
     # add the slash at the relative path's view and finished
     referer = u'/' + u'/'.join(referer[1:])
     referer=referer.split('?')[0]
+    try:
+        referer=referer.split('cocktails-flask.herokuapp.com')[1]
+    except:
+        pass    
     return referer
 
 @app.route("/delete_recipe/<recipe_id>/<username>", methods=["GET", "POST"])
