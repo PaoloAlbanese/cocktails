@@ -130,11 +130,11 @@ def search():
 
 @app.route("/profile/<username>", methods=["GET", "POST"])
 def profile(username):
-    # grab the session user's username from db
+    
 
     this_url = request.path
     referer_view = get_referer_view(request)
-
+    # grab the session user's username from db
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
     if session["user"]:
@@ -660,7 +660,10 @@ def edit_recipe():
         steps = session['steps']
         tagsInput = session['tagsInput']
 
-        return render_template("edit_recipe.html", recipe=recipeToEdit, tags=tags, recipe_name=recipe_name, recipe_description=recipe_description, time=time, cook_time=cook_time, time_notes=time_notes,  recipe_id=recipe_id, ingridients=ingridients, steps=steps, tagsInput=tagsInput)
+        this_url = request.path
+        referer_view = get_referer_view(request)
+
+        return render_template("edit_recipe.html", this_url=this_url, referer_view=referer_view, recipe=recipeToEdit, tags=tags, recipe_name=recipe_name, recipe_description=recipe_description, time=time, cook_time=cook_time, time_notes=time_notes,  recipe_id=recipe_id, ingridients=ingridients, steps=steps, tagsInput=tagsInput)
         # return render_template("edit_recipe.html", recipe=recipeToEdit, ingridients=ingridients, tagsInput=tagsInput, steps=steps, tags=tags, can_add_ing=can_add_ing, edit_step=edit_step, edit_ing=edit_ing, ing_to_edit=ing_to_edit, author=author, afterIng=afterIng, can_add_step=can_add_step, step_to_edit=step_to_edit, afterStep=afterStep, clear=clear, incomplete_Ing=incomplete_Ing)
 
     try:
