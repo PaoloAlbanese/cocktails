@@ -192,7 +192,7 @@ var addTagBtn = document.getElementById('addTagBtn');
             // document.getElementById('other_tag').checked = false
             document.getElementById("pick_tag").disabled= false;
             document.getElementById("pick_tag").required = true;
-            if (document.getElementById("pick_tag").value == "select a tag"){
+            if (document.getElementById("pick_tag").value == "select an existing tag"){
                 addTagBtn.disabled=true;
             }
             else{

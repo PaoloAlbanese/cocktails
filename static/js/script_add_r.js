@@ -142,7 +142,7 @@ var addTagBtn = document.getElementById('addTagBtn');
             document.getElementById("new_tag").value = "";
             document.getElementById("pick_tag").disabled= false;
             document.getElementById("pick_tag").required = true;
-            if (document.getElementById("pick_tag").value == "select a tag"){
+            if (document.getElementById("pick_tag").value == "select an existing tag"){
                 addTagBtn.disabled=true;
             }
             else{
@@ -178,10 +178,8 @@ var addTagBtn = document.getElementById('addTagBtn');
 
 $(document).ready(function(){
     var valsel = $('#ingridient_unit1').children("option:selected").val();
-    console.log('funziona stacosa?', valsel );
     if (valsel == ''){
         $('#ingridient_unit1').removeClass('black_color').addClass('red_color');
-        console.log('funziona stacosa davero?', valsel )
     }
     else{
         $('#ingridient_unit1').removeClass('red_color').addClass('black_color');
@@ -191,7 +189,6 @@ $(document).ready(function(){
 
 $('#ingridient_unit1').change(function(e) {
     var valsel = $(this).children("option:selected").val();
-    console.log('funziona stacosa?', valsel );
     if (valsel == ''){
         $(this).removeClass('black_color').addClass('red_color');
         console.log('funziona stacosa davero?', valsel )

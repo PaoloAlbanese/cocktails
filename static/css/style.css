@@ -73,6 +73,15 @@ p {
     word-wrap: break-word;
 }
 
+
+.recipePage{
+    width:90%;
+}
+
+@media only screen and (min-width: 700px) {
+  .recipePage{width:70%;}
+}
+
 button {
     margin:3px 2px 2px 2px;
     background-color: #007bff!important;
@@ -81,7 +90,9 @@ button {
     font-size: 1.2rem;
     outline: none!important;
 }
-
+button:disabled{
+    background-color:#d3d3d3 !important;
+}
 a:visited {
     color: #007bff;
 }

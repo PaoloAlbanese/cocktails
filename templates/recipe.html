@@ -2,11 +2,10 @@
 {% block content %}
 
 <br><br>
-<div style="width: 68%;" class="mx-auto" >
-
+<div class="mx-auto recipePage" >
         <div class="my-5 p-3 bg-light " >
                     <div  style="display: flex; align-items: center;" >
-                    <h5 class="text-primary" >{{ recipe.recipe_name }}</h5>
+                    <h4 class="text-primary " >{{ recipe.recipe_name }}</h4>
                         {% if session.user %}
                             {% if session.user|lower == recipe.author|lower %}
                                 <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" style="display: inline;" class="mx-2 btn bg-warning rounded"><i class="far fa-edit text-light"></i></a>
@@ -42,6 +41,68 @@
                     {% endfor %}
                 </div>
         </div>
+<!-- ============================================================================================================================================================================================================= -->
+        {% if session.user %}
+    <div class="row mx-auto" style="width:100%;" id="tag">
+            <form method="POST">
+                <div class="col-sm-11 mx-auto mt-4">
+                    <label for="sel_tags">select an existing tag</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text ">
+                                <input type="radio" id="sel_tags" name="tag" value="tags" class="m-auto">
+                            </div>
+                        </div>
+                        <select id="pick_tag" class="form-control" name="pick_tag" required disabled >
+                            {% if tags %}
+                            <option selected disabled>select an existing tag</option>
+                            {% for tag in tags %}
+                            <option value="{{tag.tag}}">{{tag.tag}}</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-11 mx-auto mt-4">
+                    <label for="new_tag">insert your own tag</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <input type="radio" id="other_tag" name="tag" class="m-auto" value="tags">
+                            </div>
+                        </div>
+
+                        <input id="new_tag" class="form-control m-0" name="new_tag" type="text"
+                            placeholder="insert your own tag" required disabled >
+
+                    </div>
+                </div>
+            
+                <!-- <input type="hidden" name="recipe_id" value="{{recipe._id}}"> -->
+            
+            
+            
+            <br>
+            <div class="row">
+                <div class="col-sm-10  mx-auto mt-4" style="display: flex; justify-content: left;">
+                    <button id="addTagBtn" type="submit" value="addTagBtn" formaction="{{url_for('recipe', recipe_id=recipe._id)}}?addTagBtn=True?recipe_id={{recipe._id}}" disabled>Add Tag</button>
+                    <!-- <button id="addTagBtn" name="addTagBtn" type="submit" value="addTagBtn">Add Tag</button>     -->
+                </div>
+            </div>    
+
+        </form>
+        
+    </div>
+        {% else %}
+        <br><br>
+        <p class="ml-auto my-0 text-center" style="display: inline;">Logged in users can add tags to any recipe</p><br>
+        <p class="ml-auto my-0 text-center" style="display: inline;"><a href="{{ url_for('login', recipe_id=recipe._id) }}">login </a><p class="mx-0 my-0 text-center" style="display: inline;">or </p><p class="mr-auto my-0 text-center" style="display: inline;"><a href="{{ url_for('register', recipe_id=recipe._id) }}">register </a>to add tags to this Recipe</p>
+
+        {% endif %}
+<!-- ============================================================================================================================================================================================================================ -->
+
+
         <br><br>
         <h3 class="mx-auto text-left text-primary">Tags:</h3>
         {% for tag in recipe.tags|sort %}
@@ -57,4 +118,8 @@
             {% endfor %}       
     <br>
 </div>
+{% endblock %}
+
+{% block extraScript %}
+<script src="{{ url_for('static', filename='js/recipe.js') }}"></script>
 {% endblock %}
