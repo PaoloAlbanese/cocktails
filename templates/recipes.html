@@ -8,7 +8,9 @@
 <div class="row mx-auto " style="width:94%;">
     {% if not session.user %}
     {% if not queryTerm %}
-    <h3 class="mx-auto text-success">Browse Cocktails at will, login or register to post your Recipe</h3>
+    <h3 class="mx-auto text-success">Browse Cocktails at will,<a class="text-primary"
+            href="{{ url_for('login') }}"> login </a>or <a class="text-primary"
+            href="{{ url_for('register') }}">register </a>to post your Recipe</h3>
     {% endif %}
     {% endif %}
     <div class="col-sm-10 mx-auto ">
