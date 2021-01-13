@@ -8,32 +8,33 @@
 
 <h3 class="mx-auto text-center">Register</h3>
 <div class="row">
-    
-        <form class="col-sm-10 col-lg-6 mx-auto" method="POST" action="{{ url_for('register') }}">
-            <div class="form-group">
-                <label for="usernameReg">Your username here</label>
-                <input type="text" class="form-control" id="usernameReg" name="usernameReg" minlength="5"
-                            maxlength="15" pattern="^\w+( \w+)*$" placeholder="Your username here" required>
 
-            </div>
-            <div class="form-group">
-                <label for="usernameRegPassword">Password</label>
-                <input type="password" class="form-control" id="usernameRegPassword" name="usernameRegPassword" minlength="5"
-                            maxlength="15" pattern="^[a-zA-Z0-9!@#$]{5,15}$" placeholder="Password" required>
-            </div>
+    <form class="col-sm-10 col-lg-6 mx-auto" method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="usernameReg">Your username here</label>
+            <!-- asingle white space between words is allowed -->
+            <input type="text" class="form-control" id="usernameReg" name="usernameReg" minlength="5" maxlength="15"
+                pattern="^\w+( \w+)*$" placeholder="Your username here" required>
 
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
-    
+        </div>
+        <div class="form-group">
+            <label for="usernameRegPassword">Password</label>
+            <input type="password" class="form-control" id="usernameRegPassword" name="usernameRegPassword"
+                minlength="5" maxlength="15" pattern="^[a-zA-Z0-9!@#$]{5,15}$" placeholder="Password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
 </div>
 <br>
 <div class="row">
-        <div class="col-sm-10 col-lg-6 mx-auto">
-            <p class="text-center">
-                Already Registred? Login here
-                <a href="{{ url_for('login') }}" class="">Login to your account</a>
-            </p>
-        </div>
+    <div class="col-sm-10 col-lg-6 mx-auto">
+        <p class="text-center">
+            Already Registred? Login here
+            <a href="{{ url_for('login') }}" class="">Login to your account</a>
+        </p>
     </div>
+</div>
 
 {% endblock %}

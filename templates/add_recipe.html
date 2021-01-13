@@ -16,13 +16,13 @@
                     <label class="ml-1" for="recipe_name">Recipe Name</label>
                     <input id="recipe_name" name="recipe_name" type="text" class="form-control my-0"
                         {% if recipe_name %}value="{{recipe_name}}"
-                        {% else %}placeholder='required field, e.g. "Mojito with a twist"'{% endif %}required>
+                        {% else %}placeholder='required field, e.g. "Mojito with a twist"' {% endif %}required>
                 </div>
 
                 <div class="mt-4">
                     <label class="ml-1" for="recipe_description">Recipe Description</label>
                     <textarea id="recipe_description" name="recipe_description" minlength="5" maxlength="200"
-                        class="form-control mt-0" {% if recipe_description %} value="{{recipe_description}}"{% endif %}
+                        class="form-control mt-0" {% if recipe_description %} value="{{recipe_description}}" {% endif %}
                         placeholder="required field, a brief introduction to your recipe here"
                         required>{% if recipe_description %}{{recipe_description}}{% endif %}</textarea>
 
@@ -34,13 +34,13 @@
                 <div class="mt-4">
                     <label class="ml-1" for="time">Preparation Time</label><br>
                     <input class="form-control mt-0 " id="time" name="time" type="number" min="1"
-                        {% if time %}value="{{time}}"{% endif %} placeholder="time in minutes" required>
+                        {% if time %}value="{{time}}" {% endif %} placeholder="time in minutes" required>
                     <label class="ml-1 mt-4" for="cook_time">Cook Time, if any</label><br>
                     <input class="form-control mt-0 " id="cook_time" name="cook_time" type="number" min="1"
-                        {% if cook_time %}value="{{cook_time}}"{% endif %} placeholder="cook time in minutes, if any">
+                        {% if cook_time %}value="{{cook_time}}" {% endif %} placeholder="cook time in minutes, if any">
                     <label class="ml-1 mt-4" for="time_notes">Additional notes on time</label>
                     <textarea id="time_notes" name="time_notes" type="text" class="form-control mt-0"
-                        {% if time %}value="{% if time_notes %}{{time_notes}}{% endif %}"{% endif %}
+                        {% if time %}value="{% if time_notes %}{{time_notes}}{% endif %}" {% endif %}
                         placeholder='optional additional notes on time required e.g. "plus an hour to rest"'
                         style="color:black;"></textarea>
 
@@ -52,9 +52,11 @@
         <div class="row mx-auto " style="width:80%">
             <div class="col-sm-11 col-md-4 mx-auto my-2 bgForm border border-info">
                 <h3 class="mx-auto text-center text-primary">Ingredients:</h3>
+                <!-- if the user has already added some ingredients, -->
                 {% if ingridients %}
                 <div>
                     {% for ingridient in ingridients %}
+                    <!-- if the user wants to edit an ingredient open the mini form -->
                     {% if edit_ing and ing_to_edit == loop.index0 %}
                     <div>
                         <fieldset class="">
@@ -67,7 +69,8 @@
                                 name="ingredient1" {% if ingridient[1] %}value="{{ingridient[1]}}"
                                 {% else %}placeholder="this field is still empty" {% endif %}><br>
                             <label for="ingridient_unit3" class="ml-1 mt-1">Ingridient Unit</label><br>
-
+                            
+                            <!-- if the user has failed to enter some required fields leave the mini form open but fill it with what he got right -->
                             {% if incomplete_Ing %}
                             <select name="ingredient1" id="ingridient_unit1" class="form-control mt-0" value=""
                                 required>
@@ -132,6 +135,7 @@
                         </fieldset>
                     </div>
                     {% else %}
+                    <!-- if the user has already added some ingredient, list them down -->
                     <div style="display:block;" class="enteredIng">
                         <p style="display: inline;">
                             {% if ingridient[2] == 'not applicable' %}{% if ingridient[1]|string == '0.5'  %}1/2
@@ -141,99 +145,105 @@
                             {% if ingridient[2] != 'not applicable' %}
                             {% if ingridient[2] == 'drops' %}{% if (ingridient[1])|string == '1'  %}drop{% else %}{{ingridient[2]}}{%endif%}{{ingridient[2]}}{% else %}{{ingridient[2]}}{% endif %}{% endif %}
                             {{ingridient[0]}}{% if ingridient[3] %},{% endif %} {{ingridient[3]}}</p>
-                        <button class="" formaction="{{url_for('add_recipe')}}?can_add_ing=True&afterIng={{loop.index0}}"
+                        <button class=""
+                            formaction="{{url_for('add_recipe')}}?can_add_ing=True&afterIng={{loop.index0}}"
                             type="submit" onclick="keepFields()"><i class="fas fa-plus text-light"></i></button>
-                        <i class="fas fa-wrench text-primary"></i>    
+                        <i class="fas fa-wrench text-primary"></i>
                         <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?ingridient_pos_up={{loop.index0}}"
                             onclick="keepFields()"><i class="fas fa-arrow-up text-light"></i></button>
                         <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?ingridient_pos_down={{loop.index0}}"
-                            onclick="keepFields()"><i class="fas fa-arrow-down text-light"></i></button>                      
+                            onclick="keepFields()"><i class="fas fa-arrow-down text-light"></i></button>
 
 
-                        <button class="enteredIngBtn bg-danger" style="display: inline;" type="button" onclick="keepFields()">
-                            <a href=" {{url_for('add_recipe')}}?del_ing=True&ing_to_del={{loop.index0}}"><i class="fas fa-trash-alt text-light"></i></a>
+                        <button class="enteredIngBtn bg-danger" style="display: inline;" type="button"
+                            onclick="keepFields()">
+                            <a href=" {{url_for('add_recipe')}}?del_ing=True&ing_to_del={{loop.index0}}"><i
+                                    class="fas fa-trash-alt text-light"></i></a>
                         </button>
 
-                        <button class="enteredIngBtn bg-warning" style="display: inline;" type="button" onclick="keepFields()">
-                            <a href=" {{url_for('add_recipe')}}?edit_ing=True&ing_to_edit={{loop.index0}}"><i class="far fa-edit text-light"></i></a>
+                        <button class="enteredIngBtn bg-warning" style="display: inline;" type="button"
+                            onclick="keepFields()">
+                            <a href=" {{url_for('add_recipe')}}?edit_ing=True&ing_to_edit={{loop.index0}}"><i
+                                    class="far fa-edit text-light"></i></a>
                         </button>
 
 
                     </div>
                     {% endif %}
+                    <!-- if the user wants to add an ingredient, open the mini form -->
                     {% if can_add_ing and afterIng == loop.index0 %}
                     <div>
+                        <!-- if the user has failed to enter some required fields leave the mini form open but fill it with what he got right -->
                         <fieldset>
                             <label for="ingredient1" class="ml-1 mt-1">Ingridient:</label><br>
                             <input class="form-control mt-0" type="text" id="ingredient1" name="ingredient1"
                                 {% if incomplete_Ing[0] %}value="{{incomplete_Ing[0]}}"
                                 {% else %}placeholder="this field is still empty" {% endif %}><br>
                             <label for="ingridient_qty3" class="ml-1 mt-1">Ingridient Quantity</label><br>
-                    <input class=" form-control form-control mt-0" type="number" min="0.25" step="0.25"
+                            <input class=" form-control form-control mt-0" type="number" min="0.25" step="0.25"
                                 id="ingridient_qty1" name="ingredient1"
                                 {% if incomplete_Ing[1] %}{% if incomplete_Ing[1]|string == '0.5' %}value="1/2"
                                 {% else %} value="{{incomplete_Ing[1]}}"
                                 {% endif %}{% else %}placeholder="this field is still empty" {% endif %}}><br>
-                                <label for="ingridient_unit3" class="ml-1 mt-1">Ingridient Unit</label><br>
+                            <label for="ingridient_unit3" class="ml-1 mt-1">Ingridient Unit</label><br>
 
-                                <select name="ingredient1" id="ingridient_unit1" class="red_color form-control mt-0">
-                                    <option value="">select a measure</option>
-                                    <option value="ml"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='ml'%}selected{% endif %}>ml
-                                    </option>
-                                    <option value="ltr"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='ltr'%}selected{% endif %}>ltr
-                                    </option>
-                                    <option value="g"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='g'%}selected{% endif %}>g
-                                    </option>
-                                    <option value="Kg"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='Kg'%}selected{% endif %}>Kg
-                                    </option>
-                                    <option value="tsp"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='tsp'%}selected{% endif %}>tsp
-                                    </option>
-                                    <option value="tbsp"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='tbsp'%}selected{% endif %}>
-                                        tbsp</option>
-                                    <option value="oz"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='oz'%}selected{% endif %}>oz
-                                    </option>
-                                    <option value="drops"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  =='drops'%}selected{% endif %}>
-                                        drops</option>
-                                    <option value=" small handful of"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2]  ==' small handful of'%}selected{% endif %}>
-                                        small handful of</option>
-                                    <option value="not applicable"
-                                        {% if incomplete_Ing[2] and incomplete_Ing[2] == 'not applicable' %} selected
-                                        {% endif %}>fraction or not applicable</option>
-                                    <option value="loose" {% if incomplete_Ing[2] and incomplete_Ing[2] == 'loose' %}
-                                        selected {% endif %}>just one, loose</option>
-                                </select>
-                                <br>
-                                <label for="ingridient_notes3" class="ml-1 mt-4">Ingridient Notes</label><br>
-                                <textarea class="form-control mt-0" type="text" id="ingridient_notes1"
-                                    name="ingredient1" placeholder='notes on this ingredient e.g. "peeled"'
-                                    {% if incomplete_Ing[3] %}value="{{incomplete_Ing[3]}}"
-                                    {% endif %}>{% if incomplete_Ing[3] %}{{incomplete_Ing[3]}}{% endif %}</textarea><br>
-                                <button style="display: inline;"
-                                    formaction="{{url_for('add_recipe')}}?add_ingridient&can_add_ing=True&afterIng={{loop.index0}}"
-                                    type="submit" onclick="keepFields()">Add
-                                    ingredient</button>
+                            <select name="ingredient1" id="ingridient_unit1" class="red_color form-control mt-0">
+                                <option value="">select a measure</option>
+                                <option value="ml"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='ml'%}selected{% endif %}>ml
+                                </option>
+                                <option value="ltr"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='ltr'%}selected{% endif %}>ltr
+                                </option>
+                                <option value="g"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='g'%}selected{% endif %}>g
+                                </option>
+                                <option value="Kg"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='Kg'%}selected{% endif %}>Kg
+                                </option>
+                                <option value="tsp"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='tsp'%}selected{% endif %}>tsp
+                                </option>
+                                <option value="tbsp"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='tbsp'%}selected{% endif %}>
+                                    tbsp</option>
+                                <option value="oz"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='oz'%}selected{% endif %}>oz
+                                </option>
+                                <option value="drops"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='drops'%}selected{% endif %}>
+                                    drops</option>
+                                <option value=" small handful of"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  ==' small handful of'%}selected{% endif %}>
+                                    small handful of</option>
+                                <option value="not applicable"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2] == 'not applicable' %} selected
+                                    {% endif %}>fraction or not applicable</option>
+                                <option value="loose" {% if incomplete_Ing[2] and incomplete_Ing[2] == 'loose' %}
+                                    selected {% endif %}>just one, loose</option>
+                            </select>
+                            <br>
+                            <label for="ingridient_notes3" class="ml-1 mt-4">Ingridient Notes</label><br>
+                            <textarea class="form-control mt-0" type="text" id="ingridient_notes1" name="ingredient1"
+                                placeholder='notes on this ingredient e.g. "peeled"'
+                                {% if incomplete_Ing[3] %}value="{{incomplete_Ing[3]}}"
+                                {% endif %}>{% if incomplete_Ing[3] %}{{incomplete_Ing[3]}}{% endif %}</textarea><br>
+                            <button style="display: inline;"
+                                formaction="{{url_for('add_recipe')}}?add_ingridient&can_add_ing=True&afterIng={{loop.index0}}"
+                                type="submit" onclick="keepFields()">Add
+                                ingredient</button>
 
-                                <button style="display: inline;"
-                                    formaction="{{url_for('add_recipe')}}?cancel_ingredient" type="submit"
-                                    onclick="keepFields()">cancel
-                                    adding this ingredient
-                                </button>
+                            <button style="display: inline;" formaction="{{url_for('add_recipe')}}?cancel_ingredient"
+                                type="submit" onclick="keepFields()">cancel
+                                adding this ingredient
+                            </button>
 
-                                <div class="col s12 center-align">
+                            <div class="col s12 center-align">
 
 
-                                </div>
+                            </div>
 
                         </fieldset>
                     </div>
@@ -246,7 +256,8 @@
                     {% endfor %}
                 </div>
                 {% endif %}
-
+                
+                <!-- if no ingredient has been added so far -->
                 {% if not ingridients %}
                 <div>
                     <fieldset>
@@ -296,13 +307,13 @@
 
             <div class="col-sm-11 col-md-6 mx-auto my-2 bgForm border border-info">
                 <h3 class="mx-auto text-center text-primary">Method:</h3>
-
+                 <!-- if the user has already added some steps, -->
                 {% if steps %}
                 <div>
                     {% for step in steps %}
                     {% if edit_step and step_to_edit == loop.index0 %}
                     <div>
-
+                        <!-- if the user wants to amend a step -->
                         <label for="step">Step:</label><br>
                         <input class="form-control" type="text" id="step" name="step"
                             {% if step[step_to_edit] %}value="{{step}}"
@@ -324,30 +335,35 @@
                         <p style="display: inline;">{{step}}</p>
                         <button formaction="{{url_for('add_recipe')}}?can_add_step=True&afterStep={{loop.index0}}"
                             type="submit" onclick="keepFields()"><i class="fas fa-plus text-light"></i></button>
-                        
+
                         <i class="fas fa-wrench text-primary"></i>
 
                         <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?step_pos_up={{loop.index0}}" onclick="keepFields()">
                             <i class="fas fa-arrow-up text-light"></i>
-                            </button>
+                        </button>
                         <button style="display: inline;" class="enteredIngBtn bg-info"
                             formaction="{{url_for('add_recipe')}}?step_pos_down={{loop.index0}}" onclick="keepFields()">
                             <i class="fas fa-arrow-down text-light"></i></button>
 
-                        
 
-                    <button class="enteredIngBtn bg-danger" style="display: inline;" type="button" onclick="keepFields()">
-                        <a href="{{url_for('add_recipe')}}?del_step=True&step_to_del={{loop.index0}}"><i class="fas fa-trash-alt text-light"></i></a>
-                    </button>
 
-                    <button class="enteredIngBtn bg-warning" style="display: inline;" type="button" onclick="keepFields()">
-                        <a href=" {{url_for('add_recipe')}}?edit_step=True&step_to_edit={{loop.index0}}"><i class="far fa-edit text-light"></i></a>
-                    </button>
+                        <button class="enteredIngBtn bg-danger" style="display: inline;" type="button"
+                            onclick="keepFields()">
+                            <a href="{{url_for('add_recipe')}}?del_step=True&step_to_del={{loop.index0}}"><i
+                                    class="fas fa-trash-alt text-light"></i></a>
+                        </button>
+
+                        <button class="enteredIngBtn bg-warning" style="display: inline;" type="button"
+                            onclick="keepFields()">
+                            <a href=" {{url_for('add_recipe')}}?edit_step=True&step_to_edit={{loop.index0}}"><i
+                                    class="far fa-edit text-light"></i></a>
+                        </button>
                     </div>
                     {% endif %}
 
                     <br>
+                    <!-- if the user wants to add a step -->
                     {% if can_add_step and afterStep == loop.index0 %}
                     <div>
 
@@ -408,10 +424,10 @@
             <h3 class="mx-auto text-center text-primary">Tags:</h3>
 
             <div class="row mr-auto" style="width:70%;">
-                
+
 
                 <div class="col-sm-11 col-md-4 mx-auto mt-4">
-
+                    <!-- select box to be filled with tags from the db, -the ones already added -->
                     <label for="sel_tags">select an existing tag</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -431,7 +447,7 @@
                     </div>
                 </div>
 
-
+                <!-- user can create a tag of his own -->
                 <div class="col-sm-11 col-md-4 mx-auto mt-4">
                     <label for="new_tag">insert your own tag</label>
                     <div class="input-group">
@@ -458,12 +474,16 @@
             <div class="row">
                 <div class="col-sm-10  mx-auto mt-4" style="display: flex; justify-content: left;">
                     <div id="tagList" style="list-style: none ;">
+                        <!-- if there a relady some tags, show them as pills -->
                         {% if tagsInput %}
                         {% for tag in tagsInput %}
                         <div style="display: inline;">
                             <button formaction="{{url_for('add_recipe')}}?delTag={{tag}}" onclick="keepFields()"
-                                class="badge badge-pill my-1" style="background-color: #17a2b8!important; outline: none!important;">
-                                <span class="align-text-top p-0 m-0 text-white" style="font-size:1.2rem">{{tag}} <span class="badge badge-pill badge-secondary " style="font-size:1.2rem"><span class="align-text-middle p-0 m-0">X</span>
+                                class="badge badge-pill my-1"
+                                style="background-color: #17a2b8!important; outline: none!important;">
+                                <span class="align-text-top p-0 m-0 text-white" style="font-size:1.2rem">{{tag}} <span
+                                        class="badge badge-pill badge-secondary " style="font-size:1.2rem"><span
+                                            class="align-text-middle p-0 m-0">X</span>
                                     </span></span>
                             </button>
                         </div>
@@ -483,17 +503,19 @@
                     <input id="author" name="author" type="hidden" class="" value="{{session.user}}" placeholder="">
                 </div>
                 {% endif %}
-
+                <!-- Add Recipe to appear enabled only when minimum required fileds have been filled -->
                 {% if not ingridients %}
                 {% if not steps %}
                 <div class="mx-auto ">
-                    <button style="display: block;" type="submit" class="mx-auto " formaction="{{url_for('add_recipe')}}?recipe=True" disabled onclick="clearFields()">
+                    <button style="display: block;" type="submit" class="mx-auto "
+                        formaction="{{url_for('add_recipe')}}?recipe=True" disabled onclick="clearFields()">
                         Add Recipe
                     </button>
                 </div>
                 {% else %}
                 <div class="">
-                    <button style="display: block;" type="submit" class="mx-auto " formaction="{{url_for('add_recipe')}}?recipe=True" disabled onclick="clearFields()">
+                    <button style="display: block;" type="submit" class="mx-auto "
+                        formaction="{{url_for('add_recipe')}}?recipe=True" disabled onclick="clearFields()">
                         Add Recipe
                     </button>
                 </div>
@@ -501,17 +523,19 @@
                 {% else %}
                 {% if  steps %}
                 <div class="">
-                    <button style="display: block;" type="submit" class="mx-auto " formaction="{{url_for('add_recipe')}}?recipe=True" onclick="clearFields()">
+                    <button style="display: block;" type="submit" class="mx-auto "
+                        formaction="{{url_for('add_recipe')}}?recipe=True" onclick="clearFields()">
                         Add Recipe
                     </button>
                 </div>
                 {% else %}
                 <div class="">
-                    <button style="display: block;" type="submit" class="mx-auto " formaction="{{url_for('add_recipe')}}?recipe=True" disabled onclick="clearFields()">
+                    <button style="display: block;" type="submit" class="mx-auto "
+                        formaction="{{url_for('add_recipe')}}?recipe=True" disabled onclick="clearFields()">
                         Add Recipe
                     </button>
                 </div>
-                
+
                 {% endif  %}
                 {% endif  %}
                 <br>
@@ -520,20 +544,21 @@
                     <button style="display: block;" class="mx-auto " type="button" onclick="clearFields()">
                         <a style=" color:white!important;" href="{{url_for('add_recipe')}}?clear=True">Clear</a>
                     </button>
-                    
-                </div>
-                <br>
-                    <div class="">
 
-                        <button style="display: block;" type="button" onclick="clearFields()" class="mx-auto ">
-                            <a style=" color:white!important;" href="{{ url_for('profile', username=session.user) }}">Cancel this process</a>
-                        </button>
-                        
-                    </div>
+                </div>
                 <br>
+                <div class="">
+
+                    <button style="display: block;" type="button" onclick="clearFields()" class="mx-auto ">
+                        <a style=" color:white!important;" href="{{ url_for('profile', username=session.user) }}">Cancel
+                            this process</a>
+                    </button>
+
                 </div>
-                </div>
-        </form>
+                <br>
+            </div>
+        </div>
+    </form>
 </div>
 <br><br>
 

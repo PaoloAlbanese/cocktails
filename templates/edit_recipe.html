@@ -52,11 +52,13 @@
         <div class="row">
             <div class="col-sm-11 col-md-4 mx-auto my-2 bgFormA border border-info">
                 <h3 class="mx-auto text-center text-primary">Ingredients:</h3>
+                <!-- preexisting ingredients plus any the user may have just added -->
                 {% if ingridients %}
                 <div>
                     {% for ingridient in ingridients %}
                     {% if edit_ing and ing_to_edit == loop.index0 %}
-                    <div>
+                    <!-- if the user wants to edit an ingredient open the mini form -->
+                    <div> 
                         <fieldset class="">
                             <label for="ingredient1" class="ml-1 mt-4">Ingridient:</label><br>
                             <input class="form-control mt-0" type="text" id="ingredient1" name="ingredient1"
@@ -69,6 +71,7 @@
                             <label for="ingridient_unit3" class="ml-1 mt-1">Ingridient Unit</label><br>
 
                             {% if incomplete_Ing %}
+                            <!-- if the user has failed to enter some required fields leave the mini form open but fill it with what he got right -->
                             <select name="ingredient1" id="ingridient_unit1" class="form-control mt-0" value=""
                                 required>
                                 <option selected disabled>select a measure</option>
@@ -133,6 +136,7 @@
                     </div>
                     {% else %}
                     <div style="display:block;" class="enteredIng">
+                         <!--any preexisting ingredients plus any she may have added, list them down -->
                         <p style="display: inline;">
                             {% if ingridient[2] == 'not applicable' %}{% if ingridient[1]|string == '0.5'  %}1/2
                             {% elif ingridient[1]|string == '0.25'  %}1/4 {% elif ingridient[1]|string == '0.75'  %}3/4
@@ -171,7 +175,9 @@
                     </div>
                     {% endif %}
                     {% if can_add_ing and afterIng == loop.index0 %}
+                    <!-- if the user wants to add an ingredient, open the mini form -->
                     <div>
+                        <!-- if the user has failed to enter some required fields leave the mini form open but fill it with what he got right -->
                         <fieldset>
                             <label for="ingredient1" class="ml-1 mt-1">Ingridient:</label><br>
                             <input class="form-control mt-0" type="text" id="ingredient1" name="ingredient1"
@@ -253,7 +259,7 @@
                 </div>
                 {% endif %}
 
-
+                <!-- if no ingredient has been added so far -->
                 {% if not ingridients %}
                 <div>
                     <fieldset>
@@ -305,7 +311,7 @@
 
             <div class="col-sm-11 col-md-4 mx-auto my-2 bgFormA border border-info">
                 <h3 class="mx-auto text-center text-primary">Method:</h3>
-
+                <!-- any preexisting step, and any she may have added, -->
                 {% if steps %}
                 <div>
                     {% for step in steps %}
@@ -359,8 +365,9 @@
                         </button>
                     </div>
                     {% endif %}
-
+                    
                     <br>
+                    <!-- if the user wants to add a step -->
                     {% if can_add_step and afterStep == loop.index0 %}
                     <div>
 
@@ -418,7 +425,7 @@
         <div id="tag" class="my-2 p-2 bgFormA border border-info">
             <h3 class="mx-auto text-center text-primary">Tags:</h3>
             <div class="row mr-auto" style="width:70%;">
-
+                <!-- select box to be filled with tags from the db,- the preexisting and the ones already added -->
                 <div class="col-sm-11 col-md-4 mx-auto mt-4">
                     <label for="sel_tags">select an existing tag</label>
                     <div class="input-group">
@@ -438,12 +445,13 @@
                     </div>
                 </div>
 
+                <!-- user can create a tag of his own -->
                 <div class="col-sm-11 col-md-4 mx-auto mt-4">
                     <label for="new_tag">insert your own tag</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <input type="radio" id="other_tag" name="tag" class="m-auto" style="" value="tags">
+                                <input type="radio" id="other_tag" name="tag" class="m-auto" value="tags">
                             </div>
                         </div>
 
@@ -453,7 +461,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <br>
             <div class="row">
                 <div class="col-sm-10  mx-auto mt-4" style="display: flex; justify-content: left;">
@@ -465,6 +473,7 @@
             <div class="row">
                 <div class="col-sm-10  mx-auto mt-4" style="display: flex; justify-content: left;">
                     <div id="tagList" style="list-style: none ;">
+                        <!--any preexisting tag, and any added tags, show them as pills -->
                         {% if tagsInput %}
                         {% for tag in tagsInput %}
                         <div style="display: inline;">
@@ -494,7 +503,7 @@
                 </div>
                 {% endif %}
 
-
+                <!-- Edit Recipe to appear enabled only when minimum required fileds have been filled -->
                 {% if not ingridients %}
                 {% if not steps %}
                 <div class="mx-auto ">

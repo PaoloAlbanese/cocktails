@@ -1,59 +1,65 @@
 {% extends "base.html" %}
-    {% block title %}
-    <title>Cocktails Recipes</title>
-    {% endblock %}
-    {% block content %}
-    <br>
-    
-    <div class="row mx-auto " style="width:94%;" >
-        {% if not session.user %}
-            {% if not queryTerm %}
-                <h3 class="mx-auto text-success">Browse Cocktails at will, login or register to post your Recipe</h3>
-           {% endif %}
-       {% endif %}
-        <div class="col-sm-10 mx-auto " >
-            {% if queryTerm %}
-            <h1 class="text-center text-primary">{{queryTerm}}</h1>
-            {% else %}
-            <h1 class="text-center text-primary">Displaying all Recipes</h1>
-            {% endif %}
-        </div>
-    <br><br><br>
-    
+{% block title %}
+<title>Cocktails Recipes</title>
+{% endblock %}
+{% block content %}
+<br>
+
+<div class="row mx-auto " style="width:94%;">
+    {% if not session.user %}
+    {% if not queryTerm %}
+    <h3 class="mx-auto text-success">Browse Cocktails at will, login or register to post your Recipe</h3>
+    {% endif %}
+    {% endif %}
+    <div class="col-sm-10 mx-auto ">
+        {% if queryTerm %}
+        <h1 class="text-center text-primary">{{queryTerm}}</h1>
+        {% else %}
+        <h1 class="text-center text-primary">Displaying all Recipes</h1>
+        {% endif %}
     </div>
-        <div class="row mx-auto" style="width:94%;display: flex;justify-content:center;">
+    <br><br><br>
 
-    
+</div>
+<div class="row mx-auto" style="width:94%;display: flex;justify-content:center;">
 
 
-    
+
+
+
     {% for recipe in recipes %}
-    
-    <div class="col-sm-7 col-md-3 col-xl-2 mx-2 my-2 p-3 card bg-light" style="box-sizing: content-box;" >
-        
+
+    <div class="col-sm-7 col-md-3 col-xl-2 mx-2 my-2 p-3 card bg-light" style="box-sizing: content-box;">
 
 
-        <div class="card-body" >
-            <div style="display: flex; align-items: center;" >
-            <a href="{{ url_for('recipe', recipe_id=recipe._id) }}" style="display: inline;"><h4 style="display: inline;" class="mr-1" >{{ recipe.recipe_name }}</h4></a>
-            {% if session.user %}
-                    {% if session.user|lower == recipe.author|lower or session.user|lower == 'admin' %}
-                    
-                    {% if session.user|lower == recipe.author|lower %}
-                        <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" style="display: inline;" class="mx-1 btn bg-warning rounded"><i class="far fa-edit text-light"></i></a>
-                    {% endif %}
-                        <a onclick="return confirm('Please confirm deletion of \'{{ recipe.recipe_name }}\' recipe ')" href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}" style="display: inline;" class="mx-1 btn bg-danger rounded"><i class="far fa-trash-alt text-light"></i></a>
-                    
-                    {% endif %} 
+
+        <div class="card-body">
+            <div style="display: flex; align-items: center;">
+                <a href="{{ url_for('recipe', recipe_id=recipe._id) }}" style="display: inline;">
+                    <h4 style="display: inline;" class="mr-1">{{ recipe.recipe_name }}</h4>
+                </a>
+                {% if session.user %}
+                {% if session.user|lower == recipe.author|lower or session.user|lower == 'admin' %}
+
+                {% if session.user|lower == recipe.author|lower %}
+                <a href="{{ url_for('edit_recipe', recipe_id=recipe._id) }}" style="display: inline;"
+                    class="mx-1 btn bg-warning rounded"><i class="far fa-edit text-light"></i></a>
+                {% endif %}
+                <a onclick="return confirm('Please confirm deletion of \'{{ recipe.recipe_name }}\' recipe ')"
+                    href="{{ url_for('delete_recipe', recipe_id=recipe._id, username=recipe.author) }}"
+                    style="display: inline;" class="mx-1 btn bg-danger rounded"><i
+                        class="far fa-trash-alt text-light"></i></a>
+
+                {% endif %}
                 {% endif %}
             </div>
             <p>by <a href="{{ url_for('author', username=recipe.author) }}" class="">{{ recipe.author }}</a></p>
             <p class="card-text">{{ recipe.recipe_description }}</p>
         </div>
-        
-    
+
+
         <div class="card-body">
-            <ul class="list-group list-group-flush" >
+            <ul class="list-group list-group-flush">
                 <li class="list-group-item"><strong>Prep Time: </strong>{{ recipe.time[0] }} minutes</li>
                 {% if recipe.time[1] %}
                 <li class="list-group-item"><strong>Cook Time: </strong>{{ recipe.time[1] }} minutes</li>
@@ -64,29 +70,32 @@
             </ul>
         </div>
 
-        
-        <div class="card-body" >
+
+        <div class="card-body">
             {% for tag in recipe.tags|sort %}
             <span style="margin: 0!important">
-                            <form style="display: inline!important;" ><input type="hidden" method="post" name="search" value="{{tag}}">
-                            <button type="submit" formaction="{{ url_for('search') }}" 
-                                class="badge badge-pill my-1" style="background-color: #17a2b8!important; outline: none!important;margin-left: 0!important;margin-right: 0!important">
-                                <span class="align-text-top p-0 m-0 text-white" style="font-size:0.7rem">{{tag}} <span class="badge badge-pill badge-secondary " style="font-size:0.7rem"><span class="align-text-middle p-0 m-0"><i class="fas fa-search"></i></span>
-                                    </span></span>
-                            </button>
-                            </form>
-                        </span>
+                <form style="display: inline!important;"><input type="hidden" method="post" name="search"
+                        value="{{tag}}">
+                    <button type="submit" formaction="{{ url_for('search') }}" class="badge badge-pill my-1"
+                        style="background-color: #17a2b8!important; outline: none!important;margin-left: 0!important;margin-right: 0!important">
+                        <span class="align-text-top p-0 m-0 text-white" style="font-size:0.7rem">{{tag}} <span
+                                class="badge badge-pill badge-secondary " style="font-size:0.7rem"><span
+                                    class="align-text-middle p-0 m-0"><i class="fas fa-search"></i></span>
+                            </span></span>
+                    </button>
+                </form>
+            </span>
             {% endfor %}
 
         </div>
-      
+
 
     </div>
-        {% endfor %}
+    {% endfor %}
 
-    </div>
-    
+</div>
 
-  
 
-    {% endblock %}    
+
+
+{% endblock %}
