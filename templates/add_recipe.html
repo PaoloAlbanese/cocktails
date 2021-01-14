@@ -7,7 +7,7 @@
 <br><br>
 <h3 class="mx-auto text-center text-primary">Add Recipe</h3>
 
-<div class="mx-auto" style="width:96%">
+<div class="mx-auto" style="width:86%">
     <form method="POST" action="{{ url_for('add_recipe') }}" name="mainForm">
 
         <div class="row my-2 p-2 bgForm border border-info">
@@ -50,7 +50,7 @@
 
         <br>
         <div class="row mx-auto " style="width:80%">
-            <div class="col-sm-11 col-md-4 mx-auto my-2 bgForm border border-info">
+            <div class="col-sm-11 col-md-5 mx-auto my-2 bgForm border border-info">
                 <h3 class="mx-auto text-center text-primary">Ingredients:</h3>
                 <!-- if the user has already added some ingredients, -->
                 {% if ingridients %}
@@ -88,10 +88,13 @@
                                 </option>
                                 <option value=" small handful of" {% if incomplete_Ing[2] == ' small handful of' %}
                                     selected {% endif %}>small handful</option>
+                                <option value=" large handful of" {% if incomplete_Ing[2] == ' large handful of' %}
+                                    selected {% endif %}>large handful</option>    
+                                <option value="dashes" {% if incomplete_Ing[2] == 'dashes' %}
+                                    selected {% endif %}>dashes</option>    
                                 <option value="not applicable" {% if incomplete_Ing[2] == 'not applicable' %} selected
                                     {% endif %}>fraction or not applicable</option>
-                                <option value="loose" {% if incomplete_Ing[2] == 'loose' %} selected {% endif %}>just
-                                    one, loose</option>
+                                <option value="loose" {% if incomplete_Ing[2] == 'loose' %} selected {% endif %}>loose</option>
                             </select>
 
                             {% else %}
@@ -109,10 +112,13 @@
                                 </option>
                                 <option value=" small handful of" {% if ingridient[2] == ' small handful of' %} selected
                                     {% endif %}>small handful</option>
+                                <option value=" large handful of" {% if ingridient[2] == ' large handful of' %} selected
+                                    {% endif %}>large handful</option>    
+                                <option value="dashes" {% if ingridient[2] == 'dashes' %} selected
+                                    {% endif %}>dashes</option>    
                                 <option value="not applicable" {% if ingridient[2] == 'not applicable' %} selected
                                     {% endif %}>fraction or not applicable</option>
-                                <option value="loose" {% if ingridient[2] == 'loose' %} selected {% endif %}>just one,
-                                    loose</option>
+                                <option value="loose" {% if ingridient[2] == 'loose' %} selected {% endif %}>loose</option>
                             </select>
                             {% endif %}
                             <br>
@@ -218,11 +224,17 @@
                                 <option value=" small handful of"
                                     {% if incomplete_Ing[2] and incomplete_Ing[2]  ==' small handful of'%}selected{% endif %}>
                                     small handful of</option>
+                                <option value=" large handful of"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  ==' large handful of'%}selected{% endif %}>
+                                    large handful of</option>    
+                                <option value="dashes"
+                                    {% if incomplete_Ing[2] and incomplete_Ing[2]  =='dashes'%}selected{% endif %}>
+                                    dashes</option>    
                                 <option value="not applicable"
                                     {% if incomplete_Ing[2] and incomplete_Ing[2] == 'not applicable' %} selected
                                     {% endif %}>fraction or not applicable</option>
                                 <option value="loose" {% if incomplete_Ing[2] and incomplete_Ing[2] == 'loose' %}
-                                    selected {% endif %}>just one, loose</option>
+                                    selected {% endif %}>loose</option>
                             </select>
                             <br>
                             <label for="ingridient_notes3" class="ml-1 mt-4">Ingridient Notes</label><br>
@@ -285,8 +297,10 @@
                             <option value="oz">oz</option>
                             <option value="drops">drops</option>
                             <option value=" small handful of">small handful of</option>
+                            <option value=" large handful of">large handful of</option>
+                            <option value="dashes">dashes</option>
                             <option value="not applicable">fraction or not applicable</option>
-                            <option value="loose">just one, loose</option>
+                            <option value="loose">loose</option>
                         </select>
 
                         <label for="ingridient_notes3" class="ml-1 mt-4">Ingridient notes</label><br>

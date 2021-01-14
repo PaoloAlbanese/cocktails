@@ -8,7 +8,7 @@
 <div class="row mx-auto " style="width:94%;">
     {% if not session.user %}
     {% if not queryTerm %}
-    <h3 class="mx-auto text-success">Browse Cocktails at will,<a class="text-primary"
+    <h3 class="mx-auto text-success text-center">Browse Cocktails at will,<a class="text-primary"
             href="{{ url_for('login') }}"> login </a>or <a class="text-primary"
             href="{{ url_for('register') }}">register </a>to post your Recipe</h3>
     {% endif %}
@@ -75,12 +75,12 @@
 
         <div class="card-body">
             {% for tag in recipe.tags|sort %}
-            <span style="margin: 0!important">
+            <span style="margin: 0!important;max-width:60px;">
                 <form style="display: inline!important;"><input type="hidden" method="post" name="search"
                         value="{{tag}}">
                     <button type="submit" formaction="{{ url_for('search') }}" class="badge badge-pill my-1"
                         style="background-color: #17a2b8!important; outline: none!important;margin-left: 0!important;margin-right: 0!important">
-                        <span class="align-text-top p-0 m-0 text-white" style="font-size:0.7rem">{{tag}} <span
+                        <span class="align-text-top p-0 m-0 text-white text-truncate" style="font-size:0.7rem; ">{{tag}} <span
                                 class="badge badge-pill badge-secondary " style="font-size:0.7rem"><span
                                     class="align-text-middle p-0 m-0"><i class="fas fa-search"></i></span>
                             </span></span>
@@ -96,8 +96,6 @@
     {% endfor %}
 
 </div>
-
-
 
 
 {% endblock %}

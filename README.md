@@ -61,22 +61,22 @@ From the landing page, on click, these pills will initiate a search of all recip
 * The ingredients and method sections stack up on small screens and stand side by side on medium and upwards.
 * Beside each ingredient and each step is displayed a "+" button. On click, it will open a mini form to add another ingredient/step immediately below.
 * Beside the same "+" there is a wrench icon. On hover on each ingredient/step, additional buttons will appear do move up/down, edit or delete that ingredient/step.
-* Within the ingredient mini form, there is a select box where the user can pick a measure unit, or other rough quantity indicator; for example, a quantity of "1" can be combined with the option "just one loose", to display "1 loose orange".
-The option "not applicable/fraction" will display, if combined with "1" or partial numbers:
+* Within the ingredient mini form, there is a select box where the user can pick a measure unit, or other rough quantity indicator; for example, the option "not applicable/fraction" will display, if combined with "1" or partial numbers:
 
-number | combined with not applicable/fraction diplays as | example
+number | combined with 'not applicable/fraction' diplays as | example
  --- | --- | --- 
  0.25|1/4|1/4 orange
  0.50|1/2|1/2 glass of wine
  0.75|3/4|3/4 ltr
  1|no number diplayed|ice
+ 2|number displayed but no measure unit displayed|2 celery sticks
 
  * Below the ingredients and method sections, two inputs allow the user add tags to the recipe. The first input is a select box with all the tags currently available for selction in the db.
  the second input is a free text box, where the user can insert a new tag. When the recipe is successfully saved, also the new tag will be inserted in the db throough the creation of a new document in the 'tags' collection. It will be then selectable from the select box in the future.
  * Each tag input can be activated by clicking on the corresponding radio button. Enabling one tag input disables the other. on first load of the page, both tag inputs are disabled. Once either is selected, the "Add Tag" button becomes enabled.
  * Each added ingredient's name gets automatically reflected as tag in the tags section. The user can then remove the tag manually. 
  * Each tag added shows with an "X" in the pill. If clicked at any point before the 'Add Recipe' is finally hit, the tag is removed.
- * A similar tag input system is in place on the individual recipe page. From there any logged user can add a tag to any recipe of his fellow contributors. The application is immediate and only the recipe's author or the admin will then be able to remove it.
+ * A similar tag input system is in place on the individual recipe page. From there any logged user can add a tag to any recipe of his fellow contributors. The application is immediate and only the recipe's author will then be able to remove it.
  * A new document is inserted in the 'recipe' collection when the 'Add Recipe' button is finally clicked. 
  * The update form follows the same pattern except for the fact that the the existing recipe data prefills the form upon page loading. The MongoDB 'recipes' collection document is updated when the 'Edit Recipe' button is hit.
  * A text index searches in the 'recipe_name', 'recipe_description', 'ingridients' and 'tags' fields in the 'recipes' collection. The index is used in the search box and within each card tags button in the home page. 
@@ -152,7 +152,36 @@ if ingredient1:
 ## Acknowledgments
 
 * The authentication sections of the code are based on Tim Nelson's task manager app mini project(Code Institute) in the data centric module;
-* The recepies are taken from the BBC's Good Food website, their authors' names being entered as users in the DB;
+* Most of the recepies are taken from the [BBC's Good Food website](https://www.bbcgoodfood.com/recipes/collection/cocktail-recipes). Their authors are therefore real (I think);
+ these recepies' authors names bwereeing entered as usernames in the DB;
+ here below is a table of recipe/authors pair.
+
+Recipe| Author
+ --- | ---
+ Mojito recipe|Good Food Team
+Rhubarb gin|Diana Henry
+Easy sangria|Miriam Nice
+Espresso martini|Miriam Nice
+New York sour|Miriam Nice
+Mudslide|Liberty Mendez
+Sex on the beach cocktail|Miriam Nice
+Pink gin iced tea|Miriam Nice
+Hurricane cocktail|Miriam Nice
+Two pink negronis Pink negroni|Miriam Nice
+Vodka martini|Good Food Team
+Sidecar|Miriam Nice
+Caipirinha|Miriam Nice
+Sweet manhattan cocktail|Alice Lascelles
+Blueberry mojito|Miriam Nice
+Cosmopolitan cocktail|Alice Lascelles
+Bloody mary recipe|Good Food Team
+Apple, elderflower & gin cocktails|Cassie Best
+Orange blossom Bellinis|Sarah Cook
+ 
+
+
+
+
 * Several icons are sourced from Fontawesome;
 * [Stackoverflow](https://stackoverflow.com/) and [W3Schools](https://www.w3schools.com/) where widely used for general reference;
 * get_referer_view, (Copyright (c) 2009 Arthur Furlan <arthur.furlan@gmail.com>);

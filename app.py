@@ -43,16 +43,15 @@ def get_recipes():
 def recipe(recipe_id):
     recipe = mongo.db.recipes.find_one({'_id': ObjectId(recipe_id)})
 
-
     # these two variables are present in nealy all views and passed to the script file via hidden inputs in the base template.
     # their values are the current url and the preceding. The script compares them and if they are a match it runs the code to avoid page scroll reset.
     # the referer urls is worked out with the get_referer_view
 
     this_url = request.path
     referer_view = get_referer_view(request)
-
-    if not referer_view:
-        referer_view = this_url
+    print('this urls is', this_url, ' e referer view is ', referer_view)
+    # if not referer_view:
+    #     referer_view = this_url
 
     # code to add tags to the recipe, if a user has pressed the Add Tag button
 
@@ -84,6 +83,7 @@ def recipe(recipe_id):
 
     if request.method == 'POST' and 'addTagBtn' in request.args:
 
+
         if 'recipe_id' in request.args:
             recipe_id = request.args['recipe_id']
         else:
@@ -113,14 +113,14 @@ def recipe(recipe_id):
                 strX = str(x)
                 tagToAdd = {'tag': strX}
                 if not strX in existingTagsItems:
-                    print ('strX e', strX)
+                    
                     mongo.db.tags.insert_one(tagToAdd)
+                    tags = list(mongo.db.tags.find().sort('tag', 1))
+                    
 
         mongo.db.recipes.update({'_id': ObjectId(recipe_id)},
                                 {'$set': {'tags': tagsInput}})
-
-        return redirect(url_for('recipe', recipe_id=recipe_id,
-                        this_url=this_url, referer_view=referer_view))
+        recipe = mongo.db.recipes.find_one({'_id': ObjectId(recipe_id)})
 
     return render_template('recipe.html', recipe=recipe, tags=tags,
                            this_url=this_url, referer_view=referer_view)
@@ -153,16 +153,16 @@ def register():
 
         existing_user = \
             mongo.db.users.find_one({'username': request.form.get('usernameReg'
-                                    ).lower()})
+                                                                  ).lower()})
 
         if existing_user:
             flash('Username already exists')
             return redirect(url_for('register'))
         else:
             register = {'username': request.form.get('usernameReg'
-                        ).lower(),
+                                                     ).lower(),
                         'password': generate_password_hash(request.form.get('usernameRegPassword'
-                        ))}
+                                                                            ))}
             mongo.db.users.insert_one(register)
 
             # put the new user into 'session' cookie
@@ -176,12 +176,12 @@ def register():
                 recipe_id = session['fromRecipe_id']
                 session.pop('fromRecipe_id')
                 return redirect(url_for('recipe', recipe_id=recipe_id,
-                                this_url=this_url,
-                                referer_view=referer_view))
+                                        this_url=this_url,
+                                        referer_view=referer_view))
             else:
 
                 return redirect(url_for('profile',
-                                username=session['user']))
+                                        username=session['user']))
 
     return render_template('register.html', this_url=this_url,
                            referer_view=referer_view)
@@ -214,8 +214,8 @@ def login():
 
         existing_user = \
             mongo.db.users.find_one({'username': request.form.get('username'
-                                    ).lower()})
-
+                                                                  ).lower()})
+        
         if existing_user:
 
             # ensure hashed password matches user input
@@ -223,8 +223,9 @@ def login():
             if check_password_hash(existing_user['password'],
                                    request.form.get('password')):
                 session['user'] = request.form.get('username').lower()
+
                 flash('Welcome, {}'.format(request.form.get('username'
-                      )))
+                                                            )))
 
                 # return the user to the recipe page if he clicked the register link from there
 
@@ -232,24 +233,30 @@ def login():
                     recipe_id = session['fromRecipe_id']
                     session.pop('fromRecipe_id')
                     return redirect(url_for('recipe',
-                                    recipe_id=recipe_id,
-                                    this_url=this_url,
-                                    referer_view=referer_view))
+                                            recipe_id=recipe_id,
+                                            this_url=this_url,
+                                            referer_view=referer_view))
                 else:
                     return redirect(url_for('profile',
-                                    username=session['user']))
+                                            username=session['user'],
+                                            this_url=this_url,
+                                            referer_view=referer_view))
             else:
 
                 # invalid password match
 
                 flash('Incorrect Username and/or Password')
-                return redirect(url_for('login'))
+                return redirect(url_for('login',
+                                        this_url=this_url,
+                                        referer_view=referer_view))
         else:
 
             # username doesn't exist
 
             flash('Incorrect Username and/or Password')
-            return redirect(url_for('login'))
+            return redirect(url_for('login',
+                                    this_url=this_url,
+                                    referer_view=referer_view))
 
     return render_template('login.html', this_url=this_url,
                            referer_view=referer_view)
@@ -286,7 +293,7 @@ def profile(username):
     # grab the session user's username from db
 
     username = mongo.db.users.find_one({'username': session['user'
-            ]})['username']
+                                                            ]})['username']
     if session['user']:
         recipes = list(mongo.db.recipes.find({'author': username}))
 
@@ -316,11 +323,14 @@ def author(username):
 @app.route('/logout')
 def logout():
 
+    this_url = request.path
+    referer_view = get_referer_view(request)
+
     # remove user from session cookie
 
     flash('You have been logged out')
     session.pop('user')
-    return redirect(url_for('login'))
+    return redirect(url_for('login', this_url=this_url, referer_view=referer_view))
 
 
 @app.route('/add_recipe', methods=['GET', 'POST'])
@@ -586,7 +596,7 @@ def add_recipe():
         len_steps_minus_1 = int(len(steps)) - 1
         if step_pos == len_steps_minus_1:
             (steps[int(step_pos)], steps[0]) = (steps[0],
-                    steps[int(step_pos)])
+                                                steps[int(step_pos)])
         else:
 
             (steps[int(step_pos)], steps[int(step_pos) + 1]) = \
@@ -636,7 +646,7 @@ def add_recipe():
                             session['tagsInput'] = tagsInput
                 else:
 
-                # if any of the values of the first 3 fields of the ingredient are missing, re-present the mini form, with any of submitted values prefilled
+                    # if any of the values of the first 3 fields of the ingredient are missing, re-present the mini form, with any of submitted values prefilled
 
                     if 'afterIng' in request.args:
                         afterIng = int(request.args['afterIng'])
@@ -680,10 +690,8 @@ def add_recipe():
                     can_add_step = True
 
     # the usual referer and current url values, for JS
-
     this_url = request.path
     referer_view = get_referer_view(request)
-
     # the user has clicked the Add Recipe button
     # all the data in the form so far gets saved in a dictionary and pymongo sends it to MongoDB
 
@@ -692,7 +700,7 @@ def add_recipe():
         recipe = {
             'recipe_name': request.form.get('recipe_name'),
             'recipe_description': request.form.get('recipe_description'
-                    ),
+                                                   ),
             'ingridients': ingridients,
             'steps': steps,
             'tags': tagsInput,
@@ -700,7 +708,7 @@ def add_recipe():
                      request.form.get('cook_time'),
                      request.form.get('time_notes')],
             'author': request.form.get('author'),
-            }
+        }
 
         # if the user came up with a tag of his own, add it to the MongoDB collection for future use
 
@@ -767,7 +775,7 @@ def add_recipe():
         afterStep=afterStep,
         clear=clear,
         incomplete_Ing=incomplete_Ing,
-        )
+    )
 
 
 @app.route('/edit_recipe', methods=['GET', 'POST'])
@@ -836,7 +844,7 @@ def edit_recipe():
             ingridients=ingridients,
             steps=steps,
             tagsInput=tagsInput,
-            )
+        )
 
     # to be used later to update the collection document
 
@@ -1107,7 +1115,7 @@ def edit_recipe():
         len_steps_minus_1 = int(len(steps)) - 1
         if step_pos == len_steps_minus_1:
             (steps[int(step_pos)], steps[0]) = (steps[0],
-                    steps[int(step_pos)])
+                                                steps[int(step_pos)])
         else:
 
             (steps[int(step_pos)], steps[int(step_pos) + 1]) = \
@@ -1157,7 +1165,7 @@ def edit_recipe():
                             session['tagsInput'] = tagsInput
                 else:
 
-                # if any of the values of the first 3 fields of the ingredient are missing, re-present the mini form, with any of submitted values prefilled
+                    # if any of the values of the first 3 fields of the ingredient are missing, re-present the mini form, with any of submitted values prefilled
 
                     if 'afterIng' in request.args:
                         afterIng = int(request.args['afterIng'])
@@ -1213,7 +1221,7 @@ def edit_recipe():
         editRecipe = {
             'recipe_name': request.form.get('recipe_name'),
             'recipe_description': request.form.get('recipe_description'
-                    ),
+                                                   ),
             'ingridients': ingridients,
             'steps': steps,
             'tags': tagsInput,
@@ -1221,7 +1229,7 @@ def edit_recipe():
                      request.form.get('cook_time'),
                      request.form.get('time_notes')],
             'author': request.form.get('author'),
-            }
+        }
 
         # if the user came up with a tag of his own, add it to the MongoDB collection for future use
 
@@ -1270,12 +1278,12 @@ def edit_recipe():
         afterStep=afterStep,
         clear=clear,
         incomplete_Ing=incomplete_Ing,
-        )
+    )
 
 
 # (Copyright (c) 2009 Arthur Furlan <arthur.furlan@gmail.com>)
 
-def get_referer_view(request, default=None):
+def get_referer_view(request, default='..fail'):
     '''
     Return the referer view of the current request
     Example:
@@ -1308,7 +1316,7 @@ def get_referer_view(request, default=None):
 
 
 @app.route('/delete_recipe/<recipe_id>/<username>', methods=['GET',
-           'POST'])
+                                                             'POST'])
 def delete_recipe(recipe_id, username):
     recipeToDelete = \
         mongo.db.recipes.remove({'_id': ObjectId(recipe_id)})
@@ -1316,7 +1324,7 @@ def delete_recipe(recipe_id, username):
     username = mongo.db.users.find_one({'username': username})
     return redirect(url_for('profile', username=username))
 
+
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'), port=int(os.environ.get('PORT'
-            )), debug=True)
-
+                                                               )), debug=True)

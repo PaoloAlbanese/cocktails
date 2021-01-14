@@ -61,8 +61,14 @@ fieldset {
     font-size: 1.2rem;
 }
 
+html {
+    visibility:hidden;
+    /* height:100%; */
+}
+
 body {
     background-color: rgba(65, 206, 216, 0.541);
+    /* height:100%; */
 }
 
 input, textarea {
@@ -72,7 +78,6 @@ input, textarea {
 p {
     word-wrap: break-word;
 }
-
 
 .recipePage{
     width:90%;
